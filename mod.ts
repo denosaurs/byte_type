@@ -428,7 +428,7 @@ export class BitFlags16<
   T extends Record<string, number>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements Type<V> {
-  readonly size = 1;
+  readonly size = 2;
   readonly endian;
   flags: T;
 
@@ -465,7 +465,7 @@ export class BitFlags32<
   T extends Record<string, number>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements Type<V> {
-  readonly size = 1;
+  readonly size = 4;
   readonly endian;
   flags: T;
 
@@ -502,7 +502,7 @@ export class BitFlags64<
   T extends Record<string, bigint>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements Type<V> {
-  readonly size = 1;
+  readonly size = 8;
   readonly endian;
   flags: T;
 
