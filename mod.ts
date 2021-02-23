@@ -378,7 +378,7 @@ export class FixedString implements Type<string> {
       array.push(this.type.read(view, i));
     }
 
-    return array.join("");
+    return String.fromCharCode(...array);
   }
 
   write(view: DataView, offset: number, value: string) {
