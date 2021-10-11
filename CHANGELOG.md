@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.1.3] - 2021-10-11
+
+### Features
+
+- default endianess, exported endianess function ([`863bf9c`])
+
 ## [0.1.2] - 2021-02-23
 
 ### Bug Fixes
@@ -25,6 +31,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [keep a changelog]: https://keepachangelog.com/en/1.0.0/
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
+[0.1.3]: https://github.com/denosaurs/byte_type/compare/0.1.2...0.1.3
+[`863bf9c`]: https://github.com/denosaurs/byte_type/commit/863bf9c3576659f37a999f39465966f414a9054a
 [0.1.2]: https://github.com/denosaurs/byte_type/compare/0.1.1...0.1.2
 [`9a09c31`]: https://github.com/denosaurs/byte_type/commit/9a09c31afaaaf7dcfc739644bc870d0f92a7a76f
 [0.1.1]: https://github.com/denosaurs/byte_type/compare/0.1.0...0.1.1
