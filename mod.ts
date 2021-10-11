@@ -1,4 +1,25 @@
-import { order } from "./util.ts";
+function reorder<
+  V extends Record<string, unknown>,
+  T extends Record<string, unknown> = { [K in keyof V]: unknown },
+>(object: V, order: T): T {
+  const reordered: Record<string, unknown> = {};
+
+  for (const key of Object.keys(order)) {
+    reordered[key] = object[key];
+  }
+
+  return reordered as T;
+}
+
+/**
+ * Checks the endianess of your machine, returns true
+ * if little endian and false if big endian.
+ */
+export function endianess(): boolean {
+  const buffer = new ArrayBuffer(2);
+  new DataView(buffer).setInt16(0, 256, true);
+  return new Int16Array(buffer)[0] === 256;
+}
 
 export type InnerType<T> = T extends Type<infer I> ? I : never;
 
@@ -40,7 +61,7 @@ export class I16 implements Type<number> {
   readonly size = 2;
   readonly endian;
 
-  constructor(endian?: boolean) {
+  constructor(endian: boolean = endianess()) {
     this.endian = endian;
   }
 
@@ -58,7 +79,7 @@ export class U16 implements Type<number> {
   readonly size = 2;
   readonly endian;
 
-  constructor(endian?: boolean) {
+  constructor(endian: boolean = endianess()) {
     this.endian = endian;
   }
 
@@ -76,7 +97,7 @@ export class I32 implements Type<number> {
   readonly size = 4;
   readonly endian;
 
-  constructor(endian?: boolean) {
+  constructor(endian: boolean = endianess()) {
     this.endian = endian;
   }
 
@@ -94,7 +115,7 @@ export class U32 implements Type<number> {
   readonly size = 4;
   readonly endian;
 
-  constructor(endian?: boolean) {
+  constructor(endian: boolean = endianess()) {
     this.endian = endian;
   }
 
@@ -112,7 +133,7 @@ export class I64 implements Type<bigint> {
   readonly size = 8;
   readonly endian;
 
-  constructor(endian?: boolean) {
+  constructor(endian: boolean = endianess()) {
     this.endian = endian;
   }
 
@@ -130,7 +151,7 @@ export class U64 implements Type<bigint> {
   readonly size = 8;
   readonly endian;
 
-  constructor(endian?: boolean) {
+  constructor(endian: boolean = endianess()) {
     this.endian = endian;
   }
 
@@ -148,7 +169,7 @@ export class F32 implements Type<number> {
   readonly size = 4;
   readonly endian;
 
-  constructor(endian?: boolean) {
+  constructor(endian: boolean = endianess()) {
     this.endian = endian;
   }
 
@@ -166,7 +187,7 @@ export class F64 implements Type<number> {
   readonly size = 8;
   readonly endian;
 
-  constructor(endian?: boolean) {
+  constructor(endian: boolean = endianess()) {
     this.endian = endian;
   }
 
@@ -221,7 +242,7 @@ export class Struct<
   }
 
   write(view: DataView, offset: number, value: V) {
-    for (const [key, val] of Object.entries(order(value, this.types))) {
+    for (const [key, val] of Object.entries(reorder(value, this.types))) {
       this.types[key].write(view, offset, val);
       offset += this.types[key].size;
     }
@@ -432,7 +453,7 @@ export class BitFlags16<
   readonly endian;
   flags: T;
 
-  constructor(flags: T, endian?: boolean) {
+  constructor(flags: T, endian: boolean = endianess()) {
     this.flags = flags;
     this.endian = endian;
   }
@@ -469,7 +490,7 @@ export class BitFlags32<
   readonly endian;
   flags: T;
 
-  constructor(flags: T, endian?: boolean) {
+  constructor(flags: T, endian: boolean = endianess()) {
     this.flags = flags;
     this.endian = endian;
   }
@@ -506,7 +527,7 @@ export class BitFlags64<
   readonly endian;
   flags: T;
 
-  constructor(flags: T, endian?: boolean) {
+  constructor(flags: T, endian: boolean = endianess()) {
     this.flags = flags;
     this.endian = endian;
   }
