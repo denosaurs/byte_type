@@ -570,6 +570,10 @@ export class Expect<
     this.expected = expected;
   }
 
+  is(view: DataView, offset: number, value = this.expected): boolean {
+    return this.type.read(view, offset) === value;
+  }
+
   read(view: DataView, offset: number): V {
     const value = this.type.read(view, offset);
 
