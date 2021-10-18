@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.1.5] - 2021-10-18
+
+### Features
+
+- add TypedArrayType types ([`528201d`])
+
 ## [0.1.4] - 2021-10-13
 
 ### Features
@@ -37,6 +43,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [keep a changelog]: https://keepachangelog.com/en/1.0.0/
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
+[0.1.5]: https://github.com/denosaurs/byte_type/compare/0.1.4...0.1.5
+[`528201d`]: https://github.com/denosaurs/byte_type/commit/528201dfd91bea6f3b5e6b0a65e58c3be85186bf
 [0.1.4]: https://github.com/denosaurs/byte_type/compare/0.1.3...0.1.4
 [`766c22c`]: https://github.com/denosaurs/byte_type/commit/766c22c88aa3bf77dd30c825a44345931d9aa4f6
 [0.1.3]: https://github.com/denosaurs/byte_type/compare/0.1.2...0.1.3
