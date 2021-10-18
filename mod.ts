@@ -21,6 +21,34 @@ export function endianess(): boolean {
   return new Int16Array(buffer)[0] === 256;
 }
 
+export type TypedArray =
+  | Uint8Array
+  | Uint8ClampedArray
+  | Int8Array
+  | Uint16Array
+  | Int16Array
+  | Uint32Array
+  | Int32Array
+  | Float32Array
+  | Float64Array
+  | BigUint64Array
+  | BigInt64Array;
+
+// deno-fmt-ignore
+export type TypedArrayConstructor<T extends TypedArray> =
+    T extends Uint8Array ? Uint8ArrayConstructor
+  : T extends Uint8ClampedArray ? Uint8ClampedArrayConstructor
+  : T extends Int8Array ? Int8ArrayConstructor
+  : T extends Uint16Array ? Uint16ArrayConstructor
+  : T extends Int16Array ? Int16ArrayConstructor
+  : T extends Uint32Array ? Uint32ArrayConstructor
+  : T extends Int32Array ? Int32ArrayConstructor
+  : T extends Float32Array ? Float32ArrayConstructor
+  : T extends Float64Array ? Float64ArrayConstructor
+  : T extends BigUint64Array ? BigUint64ArrayConstructor
+  : T extends BigInt64Array ? BigInt64ArrayConstructor
+  : never;
+
 export type InnerType<T> = T extends Type<infer I> ? I : never;
 
 export interface Type<T> {
@@ -586,6 +614,94 @@ export class Expect<
 
   write(view: DataView, offset: number) {
     this.type.write(view, offset, this.expected);
+  }
+}
+
+export class TypedArrayType<T extends TypedArray> implements Type<T> {
+  readonly size: number;
+  readonly length: number;
+  readonly type: TypedArrayConstructor<T>;
+
+  constructor(type: TypedArrayConstructor<T>, length: number) {
+    this.size = length * type.BYTES_PER_ELEMENT;
+    this.length = length;
+    this.type = type;
+  }
+
+  read(view: DataView, offset: number): T {
+    return new this.type(view.buffer, offset, this.length) as T;
+  }
+
+  write(view: DataView, offset: number, value: T) {
+    new this.type(view.buffer, offset).set(
+      value as unknown as ArrayLike<number> & ArrayLike<bigint>,
+    );
+  }
+}
+
+export class Uint8ArrayType extends TypedArrayType<Uint8Array> {
+  constructor(length: number) {
+    super(Uint8Array, length);
+  }
+}
+
+export class Uint8ClampedArrayType extends TypedArrayType<Uint8ClampedArray> {
+  constructor(length: number) {
+    super(Uint8ClampedArray, length);
+  }
+}
+
+export class Int8ArrayType extends TypedArrayType<Int8Array> {
+  constructor(length: number) {
+    super(Int8Array, length);
+  }
+}
+
+export class Uint16ArrayType extends TypedArrayType<Uint16Array> {
+  constructor(length: number) {
+    super(Uint16Array, length);
+  }
+}
+
+export class Int16ArrayType extends TypedArrayType<Int16Array> {
+  constructor(length: number) {
+    super(Int16Array, length);
+  }
+}
+
+export class Uint32ArrayType extends TypedArrayType<Uint32Array> {
+  constructor(length: number) {
+    super(Uint32Array, length);
+  }
+}
+
+export class Int32ArrayType extends TypedArrayType<Int32Array> {
+  constructor(length: number) {
+    super(Int32Array, length);
+  }
+}
+
+export class Float32ArrayType extends TypedArrayType<Float32Array> {
+  constructor(length: number) {
+    super(Float32Array, length);
+  }
+}
+
+export class Float64ArrayType extends TypedArrayType<Float64Array> {
+  constructor(length: number) {
+    super(Float64Array, length);
+  }
+}
+
+export class BigUint64ArrayType extends TypedArrayType<BigUint64Array> {
+  constructor(length: number) {
+    super(BigUint64Array, length);
+  }
+}
+
+export class BigInt64ArrayType extends TypedArrayType<BigInt64Array> {
+  constructor(length: number) {
+    super(BigInt64Array, length);
   }
 }
 
