@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog], and this project adheres to
 [Semantic Versioning].
 
+## [0.1.7] - 2021-12-19
+
+### Features
+
+- PointerValue and Pointer types, export default pointer type ([`878c007`])
+
 ## [0.1.6] - 2021-12-19
 
 ### Features
@@ -49,6 +55,8 @@ The format is based on [Keep a Changelog], and this project adheres to
 
 [keep a changelog]: https://keepachangelog.com/en/1.0.0/
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
+[0.1.7]: https://github.com/denosaurs/byte_type/compare/0.1.6...0.1.7
+[`878c007`]: https://github.com/denosaurs/byte_type/commit/878c0070759777c88943e794e01c6984e10765c6
 [0.1.6]: https://github.com/denosaurs/byte_type/compare/0.1.5...0.1.6
 [`0242710`]: https://github.com/denosaurs/byte_type/commit/02427107f12f20fe5d3593e4978008d7690e7099
 [0.1.5]: https://github.com/denosaurs/byte_type/compare/0.1.4...0.1.5
