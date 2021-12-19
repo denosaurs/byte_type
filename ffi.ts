@@ -262,23 +262,38 @@ export class CString implements FFIType<string> {
   }
 }
 
-export class Pointer<T extends FFIType<V>, V> implements FFIType<V> {
+export class Pointer implements FFIType<Deno.UnsafePointer> {
   size: number;
-  pointer: FFIType<bigint>;
-  type: T;
+  type: SizedFFIType<bigint>;
 
-  constructor(type: T, pointer = u64) {
-    this.size = pointer.size;
-    this.pointer = pointer;
+  constructor(type: SizedFFIType<bigint> = u64) {
+    this.size = type.size;
     this.type = type;
   }
 
+  read(view: Deno.UnsafePointerView, offset?: number): Deno.UnsafePointer {
+    return new Deno.UnsafePointer(this.type.read(view, offset));
+  }
+}
+
+export class PointerValue<T extends FFIType<V>, V> implements FFIType<V> {
+  size: number;
+  pointer: SizedFFIType<Deno.UnsafePointer>;
+  inner: T;
+
+  constructor(
+    inner: T,
+    pointerType: SizedFFIType<Deno.UnsafePointer> = pointer,
+  ) {
+    this.size = pointerType.size;
+    this.pointer = pointerType;
+    this.inner = inner;
+  }
+
   read(view: Deno.UnsafePointerView, offset?: number): V {
-    return this.type.read(
-      new Deno.UnsafePointerView(
-        new Deno.UnsafePointer(this.pointer.read(view, offset)),
-      ),
-    );
+    return this.inner.read(
+      new Deno.UnsafePointerView(this.pointer.read(view, offset)),
+    ) as V;
   }
 }
 
@@ -503,3 +518,5 @@ export const u64 = new U64();
 export const f32 = new F32();
 export const f64 = new F64();
 export const bool = new Bool();
+export const pointer = new Pointer();
+export const cstring = new CString();

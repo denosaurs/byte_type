@@ -454,7 +454,7 @@ export class BitFlags8<
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
-      ret[key] = ((flags & flag) === flag);
+      ret[key] = (flags & flag) === flag;
     }
 
     return ret as V;
@@ -491,7 +491,7 @@ export class BitFlags16<
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
-      ret[key] = ((flags & flag) === flag);
+      ret[key] = (flags & flag) === flag;
     }
 
     return ret as V;
@@ -528,7 +528,7 @@ export class BitFlags32<
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
-      ret[key] = ((flags & flag) === flag);
+      ret[key] = (flags & flag) === flag;
     }
 
     return ret as V;
@@ -565,7 +565,7 @@ export class BitFlags64<
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
-      ret[key] = ((flags & flag) === flag);
+      ret[key] = (flags & flag) === flag;
     }
 
     return ret as V;
