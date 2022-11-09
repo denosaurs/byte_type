@@ -1,326 +1,22 @@
-function reorder<
-  V extends Record<string, unknown>,
-  T extends Record<string, unknown> = { [K in keyof V]: unknown },
->(object: V, order: T): T {
-  const reordered: Record<string, unknown> = {};
-
-  for (const key of Object.keys(order)) {
-    reordered[key] = object[key];
-  }
-
-  return reordered as T;
-}
-
-/**
- * Checks the endianess of your machine, returns true
- * if little endian and false if big endian.
- */
-export function endianess(): boolean {
-  const buffer = new ArrayBuffer(2);
-  new DataView(buffer).setInt16(0, 256, true);
-  return new Int16Array(buffer)[0] === 256;
-}
-
-export type TypedArray =
-  | Uint8Array
-  | Uint8ClampedArray
-  | Int8Array
-  | Uint16Array
-  | Int16Array
-  | Uint32Array
-  | Int32Array
-  | Float32Array
-  | Float64Array
-  | BigUint64Array
-  | BigInt64Array;
-
-// deno-fmt-ignore
-export type TypedArrayConstructor<T extends TypedArray> =
-    T extends Uint8Array ? Uint8ArrayConstructor
-  : T extends Uint8ClampedArray ? Uint8ClampedArrayConstructor
-  : T extends Int8Array ? Int8ArrayConstructor
-  : T extends Uint16Array ? Uint16ArrayConstructor
-  : T extends Int16Array ? Int16ArrayConstructor
-  : T extends Uint32Array ? Uint32ArrayConstructor
-  : T extends Int32Array ? Int32ArrayConstructor
-  : T extends Float32Array ? Float32ArrayConstructor
-  : T extends Float64Array ? Float64ArrayConstructor
-  : T extends BigUint64Array ? BigUint64ArrayConstructor
-  : T extends BigInt64Array ? BigInt64ArrayConstructor
-  : never;
-
-export type InnerType<T> = T extends Type<infer I> ? I : never;
-
-export interface Type<T> {
-  readonly size: number;
-  readonly endian?: boolean;
-
-  read(view: DataView, offset: number): T;
-  write(view: DataView, offset: number, value: T): void;
-}
-
-export class I8 implements Type<number> {
-  readonly size = 1;
-
-  read(view: DataView, offset: number): number {
-    return view.getInt8(offset);
-  }
-
-  write(view: DataView, offset: number, value: number) {
-    view.setInt8(offset, value);
-    return view.buffer;
-  }
-}
-
-export class U8 implements Type<number> {
-  readonly size = 1;
-
-  read(view: DataView, offset: number): number {
-    return view.getUint8(offset);
-  }
-
-  write(view: DataView, offset: number, value: number) {
-    view.setUint8(offset, value);
-    return view.buffer;
-  }
-}
-
-export class I16 implements Type<number> {
-  readonly size = 2;
-  readonly endian;
-
-  constructor(endian: boolean = endianess()) {
-    this.endian = endian;
-  }
-
-  read(view: DataView, offset: number): number {
-    return view.getInt16(offset, this.endian);
-  }
-
-  write(view: DataView, offset: number, value: number) {
-    view.setInt16(offset, value, this.endian);
-    return view.buffer;
-  }
-}
-
-export class U16 implements Type<number> {
-  readonly size = 2;
-  readonly endian;
-
-  constructor(endian: boolean = endianess()) {
-    this.endian = endian;
-  }
-
-  read(view: DataView, offset: number): number {
-    return view.getUint16(offset, this.endian);
-  }
-
-  write(view: DataView, offset: number, value: number) {
-    view.setUint16(offset, value, this.endian);
-    return view.buffer;
-  }
-}
-
-export class I32 implements Type<number> {
-  readonly size = 4;
-  readonly endian;
-
-  constructor(endian: boolean = endianess()) {
-    this.endian = endian;
-  }
-
-  read(view: DataView, offset: number): number {
-    return view.getInt32(offset, this.endian);
-  }
-
-  write(view: DataView, offset: number, value: number) {
-    view.setInt32(offset, value, this.endian);
-    return view.buffer;
-  }
-}
-
-export class U32 implements Type<number> {
-  readonly size = 4;
-  readonly endian;
-
-  constructor(endian: boolean = endianess()) {
-    this.endian = endian;
-  }
-
-  read(view: DataView, offset: number): number {
-    return view.getUint32(offset, this.endian);
-  }
-
-  write(view: DataView, offset: number, value: number) {
-    view.setUint32(offset, value, this.endian);
-    return view.buffer;
-  }
-}
-
-export class I64 implements Type<bigint> {
-  readonly size = 8;
-  readonly endian;
-
-  constructor(endian: boolean = endianess()) {
-    this.endian = endian;
-  }
-
-  read(view: DataView, offset: number): bigint {
-    return view.getBigInt64(offset, this.endian);
-  }
-
-  write(view: DataView, offset: number, value: bigint) {
-    view.setBigInt64(offset, value, this.endian);
-    return view.buffer;
-  }
-}
-
-export class U64 implements Type<bigint> {
-  readonly size = 8;
-  readonly endian;
-
-  constructor(endian: boolean = endianess()) {
-    this.endian = endian;
-  }
-
-  read(view: DataView, offset: number): bigint {
-    return view.getBigUint64(offset, this.endian);
-  }
-
-  write(view: DataView, offset: number, value: bigint) {
-    view.setBigUint64(offset, value, this.endian);
-    return view.buffer;
-  }
-}
-
-export class F32 implements Type<number> {
-  readonly size = 4;
-  readonly endian;
-
-  constructor(endian: boolean = endianess()) {
-    this.endian = endian;
-  }
-
-  read(view: DataView, offset: number): number {
-    return view.getFloat32(offset, this.endian);
-  }
-
-  write(view: DataView, offset: number, value: number) {
-    view.setFloat32(offset, value, this.endian);
-    return view.buffer;
-  }
-}
-
-export class F64 implements Type<number> {
-  readonly size = 8;
-  readonly endian;
-
-  constructor(endian: boolean = endianess()) {
-    this.endian = endian;
-  }
-
-  read(view: DataView, offset: number): number {
-    return view.getFloat64(offset, this.endian);
-  }
-
-  write(view: DataView, offset: number, value: number) {
-    view.setFloat64(offset, value, this.endian);
-    return view.buffer;
-  }
-}
-
-export class Bool implements Type<boolean> {
-  readonly size = 1;
-
-  read(view: DataView, offset: number): boolean {
-    return view.getInt8(offset) === 1;
-  }
-
-  write(view: DataView, offset: number, value: boolean) {
-    view.setInt8(offset, value ? 1 : 0);
-    return view.buffer;
-  }
-}
-
-export class Struct<
-  T extends Record<string, Type<unknown>>,
-  V extends Record<string, unknown> = { [K in keyof T]: InnerType<T[K]> },
-> implements Type<V> {
-  readonly size: number;
-  types: T;
-
-  constructor(types: T) {
-    this.types = types;
-    this.size = 0;
-
-    for (const type of Object.values(this.types)) {
-      this.size += type.size;
-    }
-  }
-
-  read(view: DataView, offset: number): V {
-    const object: Record<string, unknown> = {};
-
-    for (const [key, type] of Object.entries(this.types)) {
-      object[key] = type.read(view, offset);
-      offset += type.size;
-    }
-
-    return object as V;
-  }
-
-  write(view: DataView, offset: number, value: V) {
-    for (const [key, val] of Object.entries(reorder(value, this.types))) {
-      this.types[key].write(view, offset, val);
-      offset += this.types[key].size;
-    }
-  }
-
-  get<K extends keyof T>(
-    view: DataView,
-    offset: number,
-    key: K,
-  ): InnerType<T[K]> | undefined {
-    for (const [entry, type] of Object.entries(this.types)) {
-      const value = type.read(view, offset);
-      offset += type.size;
-
-      if (entry === key) {
-        return value as InnerType<T[K]>;
-      }
-    }
-  }
-
-  set<K extends keyof T>(
-    view: DataView,
-    offset: number,
-    key: K,
-    value: InnerType<T[K]>,
-  ) {
-    for (const [entry, type] of Object.entries(this.types)) {
-      if (entry === key) {
-        type.write(view, offset, value);
-        return;
-      }
-
-      offset += type.size;
-    }
-  }
-}
+import { endianess, reorder } from "./util.ts";
 
 export class FixedArray<T extends Type<V>, V> implements Type<V[]> {
-  readonly size: number;
+  byteLength: number;
   type: T;
 
   constructor(type: T, length: number) {
     this.type = type;
-    this.size = length * type.size;
+    this.byteLength = length * type.byteLength;
   }
 
   read(view: DataView, offset: number): V[] {
     const array = [];
 
-    for (let i = offset; i < this.size + offset; i += this.type.size) {
+    for (
+      let i = offset;
+      i < this.byteLength + offset;
+      i += this.type.byteLength
+    ) {
       array.push(this.type.read(view, i));
     }
 
@@ -330,16 +26,16 @@ export class FixedArray<T extends Type<V>, V> implements Type<V[]> {
   write(view: DataView, offset: number, value: V[]) {
     for (let i = 0; i < value.length; i++) {
       this.type.write(view, offset, value[i]);
-      offset += this.type.size;
+      offset += this.type.byteLength;
     }
   }
 
   get(view: DataView, offset: number, index: number): V {
-    return this.type.read(view, offset + index * this.type.size);
+    return this.type.read(view, offset + index * this.type.byteLength);
   }
 
   set(view: DataView, offset: number, index: number, value: V) {
-    this.type.write(view, offset + index * this.type.size, value);
+    this.type.write(view, offset + index * this.type.byteLength, value);
   }
 }
 
@@ -347,15 +43,15 @@ export class Tuple<
   T extends [...Type<unknown>[]],
   V extends [...unknown[]] = { [I in keyof T]: InnerType<T[I]> },
 > implements Type<V> {
-  readonly size: number;
+  byteLength: number;
   types: T;
 
   constructor(types: T) {
     this.types = types;
-    this.size = 0;
+    this.byteLength = 0;
 
     for (const type of types) {
-      this.size += type.size;
+      this.byteLength += type.byteLength;
     }
   }
 
@@ -364,7 +60,7 @@ export class Tuple<
 
     for (const type of this.types) {
       tuple.push(type.read(view, offset));
-      offset += type.size;
+      offset += type.byteLength;
     }
 
     return tuple as V;
@@ -374,7 +70,7 @@ export class Tuple<
     let i = 0;
     for (const type of this.types) {
       type.write(view, offset, value[i++]);
-      offset += type.size;
+      offset += type.byteLength;
     }
   }
 
@@ -382,7 +78,7 @@ export class Tuple<
     for (let i = 0; i < this.types.length; i++) {
       const type = this.types[i];
       const value = type.read(view, offset);
-      offset += type.size;
+      offset += type.byteLength;
 
       if (index === i) {
         return value as V[I];
@@ -404,7 +100,7 @@ export class Tuple<
         type.write(view, offset, value);
         return;
       }
-      offset += type.size;
+      offset += type.byteLength;
     }
 
     throw new RangeError("Index is out of range");
@@ -412,18 +108,22 @@ export class Tuple<
 }
 
 export class FixedString implements Type<string> {
-  readonly size: number;
+  byteLength: number;
   type: Type<number>;
 
   constructor(length: number, type: Type<number> = u16) {
-    this.size = length * type.size;
+    this.byteLength = length * type.byteLength;
     this.type = type;
   }
 
   read(view: DataView, offset: number): string {
     const array = [];
 
-    for (let i = offset; i < this.size + offset; i += this.type.size) {
+    for (
+      let i = offset;
+      i < this.byteLength + offset;
+      i += this.type.byteLength
+    ) {
       array.push(this.type.read(view, i));
     }
 
@@ -433,7 +133,7 @@ export class FixedString implements Type<string> {
   write(view: DataView, offset: number, value: string) {
     for (let i = 0; i < value.length; i++) {
       this.type.write(view, offset, value.charCodeAt(i));
-      offset += this.type.size;
+      offset += this.type.byteLength;
     }
   }
 }
@@ -442,7 +142,7 @@ export class BitFlags8<
   T extends Record<string, number>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements Type<V> {
-  readonly size = 1;
+  byteLength = 1;
   flags: T;
 
   constructor(flags: T) {
@@ -477,8 +177,8 @@ export class BitFlags16<
   T extends Record<string, number>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements Type<V> {
-  readonly size = 2;
-  readonly endian;
+  byteLength = 2;
+  endian;
   flags: T;
 
   constructor(flags: T, endian: boolean = endianess()) {
@@ -514,8 +214,8 @@ export class BitFlags32<
   T extends Record<string, number>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements Type<V> {
-  readonly size = 4;
-  readonly endian;
+  byteLength = 4;
+  endian;
   flags: T;
 
   constructor(flags: T, endian: boolean = endianess()) {
@@ -551,8 +251,8 @@ export class BitFlags64<
   T extends Record<string, bigint>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements Type<V> {
-  readonly size = 8;
-  readonly endian;
+  byteLength = 8;
+  endian;
   flags: T;
 
   constructor(flags: T, endian: boolean = endianess()) {
@@ -588,12 +288,12 @@ export class Expect<
   V,
   T extends Type<V>,
 > implements Type<V> {
-  readonly size;
+  byteLength;
   type: T;
   expected: V;
 
   constructor(type: T, expected: V) {
-    this.size = type.size;
+    this.byteLength = type.byteLength;
     this.type = type;
     this.expected = expected;
   }
@@ -617,13 +317,12 @@ export class Expect<
   }
 }
 
-export class TypedArrayType<T extends TypedArray> implements Type<T> {
-  readonly size: number;
+export class ArrayBufferType implements Type<ArrayBuffer> {
+  byteLength: number;
   readonly length: number;
-  readonly type: TypedArrayConstructor<T>;
 
-  constructor(type: TypedArrayConstructor<T>, length: number) {
-    this.size = length * type.BYTES_PER_ELEMENT;
+  constructor(length: number) {
+    this.byteLength = length;
     this.length = length;
     this.type = type;
   }
@@ -704,31 +403,3 @@ export class BigInt64ArrayType extends TypedArrayType<BigInt64Array> {
     super(BigInt64Array, length);
   }
 }
-
-export const i8 = new I8();
-export const u8 = new U8();
-export const i16 = new I16();
-export const i16le = new I16(true);
-export const i16be = new I16(false);
-export const u16 = new U16();
-export const u16le = new U16(true);
-export const u16be = new U16(false);
-export const i32 = new I32();
-export const i32le = new I32(true);
-export const i32be = new I32(false);
-export const u32 = new U32();
-export const u32le = new U32(true);
-export const u32be = new U32(false);
-export const i64 = new I64();
-export const i64le = new I64(true);
-export const i64be = new I64(false);
-export const u64 = new U64();
-export const u64le = new U64(true);
-export const u64be = new U64(false);
-export const f32 = new F32();
-export const f32le = new F32(true);
-export const f32be = new F32(false);
-export const f64 = new F64();
-export const f64le = new F64(true);
-export const f64be = new F64(false);
-export const bool = new Bool();
