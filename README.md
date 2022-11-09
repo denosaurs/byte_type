@@ -8,11 +8,24 @@
 `byte_type` is a small helper module for working with different raw types
 represented as a bunch of bytes.
 
+## Usage
+
+```ts
+import { PackedStruct } from "https://deno.land/x/byte_type/types/structs/mod.ts";
+import { u32, u8 } from "https://deno.land/x/byte_type/types/primitives/mod.ts";
+
+const o = new PackedStruct({ "b": u8, "a": u32 }).object(
+  new DataView(new ArrayBuffer(5)),
+  0,
+);
+
+console.log(o.valueOf());
+```
+
 ## Maintainers
 
 - Elias Sjögreen ([@eliassjogreen](https://github.com/eliassjogreen))
-
-## Other
+- Loading ([@load1n9](https://github.com/load1n9))
 
 ### Contribution
 
