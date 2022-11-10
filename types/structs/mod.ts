@@ -11,8 +11,8 @@ export class Struct<
   constructor(
     types: { [K in keyof T]: [number, T[K]] },
     byteLength = Math.max(
-      ...Object.values(types).map(([offset, type], index, array) =>
-        offset + (index === array.length - 1 ? type.byteLength : 0)
+      ...Object.values(types).map(([byteOffset, type], index, array) =>
+        byteOffset + (index === array.length - 1 ? type.byteLength : 0)
       ),
     ),
     byteAlign = Math.max(
@@ -26,23 +26,23 @@ export class Struct<
     this.byteAlign = byteAlign;
   }
 
-  read(view: DataView, offset: number): V {
+  read(view: DataView, byteOffset: number): V {
     const object: Record<string, unknown> = {};
 
     for (const [key, [typeOffset, type]] of Object.entries(this.typeRecord)) {
-      object[key] = type.read(view, offset + typeOffset);
+      object[key] = type.read(view, byteOffset + typeOffset);
     }
 
     return object as V;
   }
 
-  write(view: DataView, offset: number, value: V) {
+  write(view: DataView, byteOffset: number, value: V) {
     for (const [key, [typeOffset, type]] of Object.entries(this.typeRecord)) {
-      type.write(view, offset + typeOffset, value[key]);
+      type.write(view, byteOffset + typeOffset, value[key]);
     }
   }
 
-  object(view: DataView, offset: number): V {
+  object(view: DataView, byteOffset: number): V {
     const object = {};
 
     Object.defineProperties(
@@ -51,16 +51,16 @@ export class Struct<
         Object.keys(this.typeRecord).map(
           (key) => {
             return [key, {
-              configurable: true,
+              configurable: false,
               enumerable: true,
 
               get: () => {
                 const [typeOffset, type] = this.typeRecord[key];
-                return type.read(view, offset + typeOffset);
+                return type.read(view, byteOffset + typeOffset);
               },
               set: (value) => {
                 const [typeOffset, type] = this.typeRecord[key];
-                type.write(view, offset + typeOffset, value);
+                type.write(view, byteOffset + typeOffset, value);
               },
             }];
           },

@@ -10,12 +10,12 @@ export class F32 implements AlignedType<number> {
     this.endian = endian;
   }
 
-  read(view: DataView, offset: number): number {
-    return view.getFloat32(offset, this.endian);
+  read(view: DataView, byteOffset: number): number {
+    return view.getFloat32(byteOffset, this.endian);
   }
 
-  write(view: DataView, offset: number, value: number) {
-    view.setFloat32(offset, value, this.endian);
+  write(view: DataView, byteOffset: number, value: number) {
+    view.setFloat32(byteOffset, value, this.endian);
     return view.buffer;
   }
 }

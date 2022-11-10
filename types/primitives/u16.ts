@@ -10,12 +10,12 @@ export class U16 implements AlignedType<number> {
     this.endian = endian;
   }
 
-  read(view: DataView, offset: number): number {
-    return view.getUint16(offset, this.endian);
+  read(view: DataView, byteOffset: number): number {
+    return view.getUint16(byteOffset, this.endian);
   }
 
-  write(view: DataView, offset: number, value: number) {
-    view.setUint16(offset, value, this.endian);
+  write(view: DataView, byteOffset: number, value: number) {
+    view.setUint16(byteOffset, value, this.endian);
     return view.buffer;
   }
 }

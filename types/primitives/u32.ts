@@ -10,12 +10,12 @@ export class U32 implements AlignedType<number> {
     this.endian = endian;
   }
 
-  read(view: DataView, offset: number): number {
-    return view.getUint32(offset, this.endian);
+  read(view: DataView, byteOffset: number): number {
+    return view.getUint32(byteOffset, this.endian);
   }
 
-  write(view: DataView, offset: number, value: number) {
-    view.setUint32(offset, value, this.endian);
+  write(view: DataView, byteOffset: number, value: number) {
+    view.setUint32(byteOffset, value, this.endian);
     return view.buffer;
   }
 }

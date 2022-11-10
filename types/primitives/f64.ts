@@ -10,12 +10,12 @@ export class F64 implements AlignedType<number> {
     this.endian = endian;
   }
 
-  read(view: DataView, offset: number): number {
-    return view.getFloat64(offset, this.endian);
+  read(view: DataView, byteOffset: number): number {
+    return view.getFloat64(byteOffset, this.endian);
   }
 
-  write(view: DataView, offset: number, value: number) {
-    view.setFloat64(offset, value, this.endian);
+  write(view: DataView, byteOffset: number, value: number) {
+    view.setFloat64(byteOffset, value, this.endian);
     return view.buffer;
   }
 }

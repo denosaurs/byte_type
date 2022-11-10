@@ -30,7 +30,7 @@ export type InnerFFIType<T> = T extends FFIType<infer I> ? I : never;
 
 export interface FFIType<T> {
   size?: number;
-  read(view: Deno.UnsafePointerView, offset?: number): T;
+  read(view: Deno.UnsafePointerView, byteOffset?: number): T;
 }
 
 export type SizedFFIType<T> = FFIType<T> & { size: number };
@@ -38,88 +38,88 @@ export type SizedFFIType<T> = FFIType<T> & { size: number };
 export class I8 implements FFIType<number> {
   size = 1;
 
-  read(view: Deno.UnsafePointerView, offset?: number): number {
-    return view.getInt8(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): number {
+    return view.getInt8(byteOffset);
   }
 }
 
 export class U8 implements FFIType<number> {
   size = 1;
 
-  read(view: Deno.UnsafePointerView, offset?: number): number {
-    return view.getUint8(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): number {
+    return view.getUint8(byteOffset);
   }
 }
 
 export class I16 implements FFIType<number> {
   size = 2;
 
-  read(view: Deno.UnsafePointerView, offset?: number): number {
-    return view.getInt16(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): number {
+    return view.getInt16(byteOffset);
   }
 }
 
 export class U16 implements FFIType<number> {
   size = 2;
 
-  read(view: Deno.UnsafePointerView, offset?: number): number {
-    return view.getUint16(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): number {
+    return view.getUint16(byteOffset);
   }
 }
 
 export class I32 implements FFIType<number> {
   size = 4;
 
-  read(view: Deno.UnsafePointerView, offset?: number): number {
-    return view.getInt32(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): number {
+    return view.getInt32(byteOffset);
   }
 }
 
 export class U32 implements FFIType<number> {
   size = 4;
 
-  read(view: Deno.UnsafePointerView, offset?: number): number {
-    return view.getUint32(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): number {
+    return view.getUint32(byteOffset);
   }
 }
 
 export class I64 implements FFIType<bigint> {
   size = 8;
 
-  read(view: Deno.UnsafePointerView, offset?: number): bigint {
-    return view.getBigInt64(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): bigint {
+    return view.getBigInt64(byteOffset);
   }
 }
 
 export class U64 implements FFIType<bigint> {
   size = 8;
 
-  read(view: Deno.UnsafePointerView, offset?: number): bigint {
-    return view.getBigUint64(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): bigint {
+    return view.getBigUint64(byteOffset);
   }
 }
 
 export class F32 implements FFIType<number> {
   size = 4;
 
-  read(view: Deno.UnsafePointerView, offset?: number): number {
-    return view.getFloat32(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): number {
+    return view.getFloat32(byteOffset);
   }
 }
 
 export class F64 implements FFIType<number> {
   size = 8;
 
-  read(view: Deno.UnsafePointerView, offset?: number): number {
-    return view.getFloat64(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): number {
+    return view.getFloat64(byteOffset);
   }
 }
 
 export class Bool implements FFIType<boolean> {
   size = 1;
 
-  read(view: Deno.UnsafePointerView, offset?: number): boolean {
-    return view.getInt8(offset) === 1;
+  read(view: Deno.UnsafePointerView, byteOffset?: number): boolean {
+    return view.getInt8(byteOffset) === 1;
   }
 }
 
@@ -139,12 +139,12 @@ export class Struct<
     }
   }
 
-  read(view: Deno.UnsafePointerView, offset = 0): V {
+  read(view: Deno.UnsafePointerView, byteOffset = 0): V {
     const object: Record<string, unknown> = {};
 
     for (const [key, type] of Object.entries(this.types)) {
-      object[key] = type.read(view, offset);
-      offset += type.size;
+      object[key] = type.read(view, byteOffset);
+      byteOffset += type.size;
     }
 
     return object as V;
@@ -152,12 +152,12 @@ export class Struct<
 
   get<K extends keyof T>(
     view: Deno.UnsafePointerView,
-    offset = 0,
+    byteOffset = 0,
     key: K,
   ): InnerFFIType<T[K]> | undefined {
     for (const [entry, type] of Object.entries(this.types)) {
-      const value = type.read(view, offset);
-      offset += type.size;
+      const value = type.read(view, byteOffset);
+      byteOffset += type.size;
 
       if (entry === key) {
         return value as InnerFFIType<T[K]>;
@@ -175,18 +175,18 @@ export class FixedArray<T extends SizedFFIType<V>, V> implements FFIType<V[]> {
     this.size = length * type.size;
   }
 
-  read(view: Deno.UnsafePointerView, offset = 0): V[] {
+  read(view: Deno.UnsafePointerView, byteOffset = 0): V[] {
     const array = [];
 
-    for (let i = offset; i < this.size + offset; i += this.type.size) {
+    for (let i = byteOffset; i < this.size + byteOffset; i += this.type.size) {
       array.push(this.type.read(view, i));
     }
 
     return array;
   }
 
-  get(view: Deno.UnsafePointerView, offset = 0, index: number): V {
-    return this.type.read(view, offset + index * this.type.size);
+  get(view: Deno.UnsafePointerView, byteOffset = 0, index: number): V {
+    return this.type.read(view, byteOffset + index * this.type.size);
   }
 }
 
@@ -206,12 +206,12 @@ export class Tuple<
     }
   }
 
-  read(view: Deno.UnsafePointerView, offset = 0): V {
+  read(view: Deno.UnsafePointerView, byteOffset = 0): V {
     const tuple = [];
 
     for (const type of this.types) {
-      tuple.push(type.read(view, offset));
-      offset += type.size;
+      tuple.push(type.read(view, byteOffset));
+      byteOffset += type.size;
     }
 
     return tuple as V;
@@ -219,13 +219,13 @@ export class Tuple<
 
   get<I extends keyof V>(
     view: Deno.UnsafePointerView,
-    offset = 0,
+    byteOffset = 0,
     index: I,
   ): V[I] {
     for (let i = 0; i < this.types.length; i++) {
       const type = this.types[i];
-      const value = type.read(view, offset);
-      offset += type.size;
+      const value = type.read(view, byteOffset);
+      byteOffset += type.size;
 
       if (index === i) {
         return value as V[I];
@@ -245,10 +245,10 @@ export class FixedString implements FFIType<string> {
     this.type = type;
   }
 
-  read(view: Deno.UnsafePointerView, offset = 0): string {
+  read(view: Deno.UnsafePointerView, byteOffset = 0): string {
     const array = [];
 
-    for (let i = offset; i < this.size + offset; i += this.type.size) {
+    for (let i = byteOffset; i < this.size + byteOffset; i += this.type.size) {
       array.push(this.type.read(view, i));
     }
 
@@ -257,8 +257,8 @@ export class FixedString implements FFIType<string> {
 }
 
 export class CString implements FFIType<string> {
-  read(view: Deno.UnsafePointerView, offset?: number): string {
-    return view.getCString(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): string {
+    return view.getCString(byteOffset);
   }
 }
 
@@ -271,8 +271,8 @@ export class Pointer implements FFIType<Deno.UnsafePointer> {
     this.type = type;
   }
 
-  read(view: Deno.UnsafePointerView, offset?: number): Deno.UnsafePointer {
-    return new Deno.UnsafePointer(this.type.read(view, offset));
+  read(view: Deno.UnsafePointerView, byteOffset?: number): Deno.UnsafePointer {
+    return new Deno.UnsafePointer(this.type.read(view, byteOffset));
   }
 }
 
@@ -290,9 +290,9 @@ export class PointerValue<T extends FFIType<V>, V> implements FFIType<V> {
     this.inner = inner;
   }
 
-  read(view: Deno.UnsafePointerView, offset?: number): V {
+  read(view: Deno.UnsafePointerView, byteOffset?: number): V {
     return this.inner.read(
-      new Deno.UnsafePointerView(this.pointer.read(view, offset)),
+      new Deno.UnsafePointerView(this.pointer.read(view, byteOffset)),
     ) as V;
   }
 }
@@ -308,8 +308,8 @@ export class BitFlags8<
     this.flags = flags;
   }
 
-  read(view: Deno.UnsafePointerView, offset?: number): V {
-    const flags = view.getUint8(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): V {
+    const flags = view.getUint8(byteOffset);
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
@@ -331,8 +331,8 @@ export class BitFlags16<
     this.flags = flags;
   }
 
-  read(view: Deno.UnsafePointerView, offset?: number): V {
-    const flags = view.getUint16(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): V {
+    const flags = view.getUint16(byteOffset);
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
@@ -354,8 +354,8 @@ export class BitFlags32<
     this.flags = flags;
   }
 
-  read(view: Deno.UnsafePointerView, offset?: number): V {
-    const flags = view.getUint32(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): V {
+    const flags = view.getUint32(byteOffset);
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
@@ -377,8 +377,8 @@ export class BitFlags64<
     this.flags = flags;
   }
 
-  read(view: Deno.UnsafePointerView, offset?: number): V {
-    const flags = view.getBigUint64(offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): V {
+    const flags = view.getBigUint64(byteOffset);
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
@@ -405,14 +405,14 @@ export class Expect<
 
   is(
     view: Deno.UnsafePointerView,
-    offset?: number,
+    byteOffset?: number,
     value = this.expected,
   ): boolean {
-    return this.type.read(view, offset) === value;
+    return this.type.read(view, byteOffset) === value;
   }
 
-  read(view: Deno.UnsafePointerView, offset?: number): V {
-    const value = this.type.read(view, offset);
+  read(view: Deno.UnsafePointerView, byteOffset?: number): V {
+    const value = this.type.read(view, byteOffset);
 
     if (value !== this.expected) {
       throw new TypeError(`Expected ${this.expected} found ${value}`);
@@ -433,9 +433,9 @@ export class TypedArrayFFIType<T extends TypedArray> implements FFIType<T> {
     this.type = type;
   }
 
-  read(view: Deno.UnsafePointerView, offset?: number): T {
+  read(view: Deno.UnsafePointerView, byteOffset?: number): T {
     const array = new this.type(this.length);
-    view.copyInto(array, offset);
+    view.copyInto(array, byteOffset);
     return array as T;
   }
 }

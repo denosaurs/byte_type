@@ -10,12 +10,12 @@ export class U64 implements AlignedType<bigint> {
     this.endian = endian;
   }
 
-  read(view: DataView, offset: number): bigint {
-    return view.getBigUint64(offset, this.endian);
+  read(view: DataView, byteOffset: number): bigint {
+    return view.getBigUint64(byteOffset, this.endian);
   }
 
-  write(view: DataView, offset: number, value: bigint) {
-    view.setBigUint64(offset, value, this.endian);
+  write(view: DataView, byteOffset: number, value: bigint) {
+    view.setBigUint64(byteOffset, value, this.endian);
     return view.buffer;
   }
 }
