@@ -1,6 +1,6 @@
 import { SizedType, ViewableType } from "../types.ts";
 
-export class BitFlags8<
+export class BitFlags32<
   T extends Record<string, number>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements SizedType<V>, ViewableType<V> {
@@ -12,7 +12,7 @@ export class BitFlags8<
   }
 
   read(dataView: DataView, byteOffset = 0): V {
-    const flags = dataView.getUint8(byteOffset);
+    const flags = dataView.getUint32(byteOffset);
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
@@ -31,7 +31,7 @@ export class BitFlags8<
       }
     }
 
-    dataView.setUint8(byteOffset, flags);
+    dataView.setUint32(byteOffset, flags);
   }
 
   view(dataView: DataView, byteOffset = 0): V {
@@ -45,17 +45,21 @@ export class BitFlags8<
           enumerable: true,
 
           get: () => {
-            return (dataView.getUint8(byteOffset) & flag) === flag;
+            return (dataView.getUint32(byteOffset) & flag) === flag;
           },
           set: (value: boolean) => {
-            dataView.setUint8(
+            dataView.setUint32(
               byteOffset,
-              (dataView.getUint8(byteOffset) & 0) | Number(value),
+              (dataView.getUint32(byteOffset) & 0) | Number(value),
             );
           },
         }]),
       ),
     );
+
+    Object.defineProperty(object, "valueOf", {
+      value: () => this.read(dataView, byteOffset),
+    });
 
     return object as unknown as V;
   }

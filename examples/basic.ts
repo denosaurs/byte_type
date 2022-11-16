@@ -1,7 +1,7 @@
 import { PackedStruct } from "../types/structs/mod.ts";
 import { u32, u8 } from "../types/primitives/mod.ts";
 
-const o = new PackedStruct({ "b": u8, "a": u32 }).object(
+const o = new PackedStruct({ "b": u8, "a": u32 }).view(
   new DataView(new ArrayBuffer(5)),
   0,
 );

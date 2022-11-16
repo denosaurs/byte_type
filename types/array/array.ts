@@ -1,6 +1,6 @@
-import { SizedType } from "../../types.ts";
+import { SizedType, ViewableType } from "../types.ts";
 
-export class ArrayType<T> implements SizedType<T[]> {
+export class ArrayType<T> implements SizedType<T[]>, ViewableType<T[]> {
   byteLength: number;
   byteStride: number;
   type: SizedType<T>;
@@ -15,7 +15,7 @@ export class ArrayType<T> implements SizedType<T[]> {
     this.type = type;
   }
 
-  read(view: DataView, byteOffset: number): T[] {
+  read(dataView: DataView, byteOffset = 0): T[] {
     const array = [];
 
     for (
@@ -23,20 +23,20 @@ export class ArrayType<T> implements SizedType<T[]> {
       i < this.byteLength + byteOffset;
       i += this.byteStride
     ) {
-      array.push(this.type.read(view, i));
+      array.push(this.type.read(dataView, i));
     }
 
     return array;
   }
 
-  write(view: DataView, byteOffset: number, value: T[]) {
+  write(value: T[], dataView: DataView, byteOffset = 0) {
     for (let i = 0; i < value.length; i++) {
-      this.type.write(view, byteOffset, value[i]);
+      this.type.write(value[i], dataView, byteOffset);
       byteOffset += this.byteStride;
     }
   }
 
-  array(view: DataView, byteOffset: number): T[] {
+  view(dataView: DataView, byteOffset = 0): T[] {
     const array: T[] = [];
 
     for (
@@ -49,10 +49,10 @@ export class ArrayType<T> implements SizedType<T[]> {
         enumerable: true,
 
         get: () => {
-          return this.type.read(view, i);
+          return this.type.read(dataView, i);
         },
         set: (value: T) => {
-          this.type.write(view, i, value);
+          this.type.write(value, dataView, i);
         },
       });
     }

@@ -1,7 +1,7 @@
 import { SizedType, ViewableType } from "../types.ts";
 
-export class BitFlags8<
-  T extends Record<string, number>,
+export class BitFlags64<
+  T extends Record<string, bigint>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements SizedType<V>, ViewableType<V> {
   byteLength = 1;
@@ -12,7 +12,7 @@ export class BitFlags8<
   }
 
   read(dataView: DataView, byteOffset = 0): V {
-    const flags = dataView.getUint8(byteOffset);
+    const flags = dataView.getBigUint64(byteOffset);
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
@@ -23,7 +23,7 @@ export class BitFlags8<
   }
 
   write(value: V, dataView: DataView, byteOffset = 0) {
-    let flags = 0;
+    let flags = 0n;
 
     for (const [key, enabled] of Object.entries(value)) {
       if (enabled) {
@@ -31,7 +31,7 @@ export class BitFlags8<
       }
     }
 
-    dataView.setUint8(byteOffset, flags);
+    dataView.setBigUint64(byteOffset, flags);
   }
 
   view(dataView: DataView, byteOffset = 0): V {
@@ -45,17 +45,21 @@ export class BitFlags8<
           enumerable: true,
 
           get: () => {
-            return (dataView.getUint8(byteOffset) & flag) === flag;
+            return (dataView.getBigUint64(byteOffset) & flag) === flag;
           },
           set: (value: boolean) => {
-            dataView.setUint8(
+            dataView.setBigUint64(
               byteOffset,
-              (dataView.getUint8(byteOffset) & 0) | Number(value),
+              (dataView.getBigUint64(byteOffset) & 0n) | BigInt(value),
             );
           },
         }]),
       ),
     );
+
+    Object.defineProperty(object, "valueOf", {
+      value: () => this.read(dataView, byteOffset),
+    });
 
     return object as unknown as V;
   }

@@ -1,4 +1,4 @@
-import { AlignedType } from "../../types.ts";
+import { AlignedType } from "../types.ts";
 import { endianess } from "../../util.ts";
 
 export class U16 implements AlignedType<number> {
@@ -10,13 +10,13 @@ export class U16 implements AlignedType<number> {
     this.endian = endian;
   }
 
-  read(view: DataView, byteOffset: number): number {
-    return view.getUint16(byteOffset, this.endian);
+  read(dataView: DataView, byteOffset = 0): number {
+    return dataView.getUint16(byteOffset, this.endian);
   }
 
-  write(view: DataView, byteOffset: number, value: number) {
-    view.setUint16(byteOffset, value, this.endian);
-    return view.buffer;
+  write(value: number, dataView: DataView, byteOffset = 0) {
+    dataView.setUint16(byteOffset, value, this.endian);
+    return dataView.buffer;
   }
 }
 

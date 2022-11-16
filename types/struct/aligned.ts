@@ -1,4 +1,4 @@
-import { AlignedType, InnerType, SizedType } from "../../types.ts";
+import { AlignedType, InnerType, SizedType } from "../types.ts";
 import { Struct } from "./mod.ts";
 
 export class AlignedStruct<

@@ -1,8 +1,7 @@
 export type InnerType<T> = T extends Type<infer I> ? I : never;
-
 export interface Type<T> {
-  read(view: DataView, byteOffset: number): T;
-  write(view: DataView, byteOffset: number, value: T): void;
+  read(dataView: DataView, byteOffset?: number): T;
+  write(value: T, dataView: DataView, byteOffset?: number): void;
 }
 
 export interface SizedType<T> extends Type<T> {
@@ -11,4 +10,8 @@ export interface SizedType<T> extends Type<T> {
 
 export interface AlignedType<T> extends SizedType<T> {
   byteAlign: number;
+}
+
+export interface ViewableType<T> {
+  view(dataView: DataView, byteOffset?: number): T;
 }

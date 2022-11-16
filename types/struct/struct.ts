@@ -1,9 +1,9 @@
-import { AlignedType, InnerType, SizedType } from "../../types.ts";
+import { AlignedType, InnerType, SizedType, ViewableType } from "../types.ts";
 
 export class Struct<
   T extends Record<string, SizedType<unknown> | AlignedType<unknown>>,
   V extends { [K in keyof T]: InnerType<T[K]> },
-> implements AlignedType<V> {
+> implements AlignedType<V>, ViewableType<V> {
   byteLength: number;
   byteAlign: number;
   typeRecord: { [K in keyof T]: [number, T[K]] };
@@ -26,23 +26,23 @@ export class Struct<
     this.byteAlign = byteAlign;
   }
 
-  read(view: DataView, byteOffset: number): V {
+  read(dataView: DataView, byteOffset = 0): V {
     const object: Record<string, unknown> = {};
 
     for (const [key, [typeOffset, type]] of Object.entries(this.typeRecord)) {
-      object[key] = type.read(view, byteOffset + typeOffset);
+      object[key] = type.read(dataView, byteOffset + typeOffset);
     }
 
     return object as V;
   }
 
-  write(view: DataView, byteOffset: number, value: V) {
+  write(value: V, dataView: DataView, byteOffset = 0) {
     for (const [key, [typeOffset, type]] of Object.entries(this.typeRecord)) {
-      type.write(view, byteOffset + typeOffset, value[key]);
+      type.write(value[key], dataView, byteOffset + typeOffset);
     }
   }
 
-  object(view: DataView, byteOffset: number): V {
+  view(dataView: DataView, byteOffset = 0): V {
     const object = {};
 
     Object.defineProperties(
@@ -50,17 +50,17 @@ export class Struct<
       Object.fromEntries(
         Object.keys(this.typeRecord).map(
           (key) => {
+            const [typeOffset, type] = this.typeRecord[key];
+
             return [key, {
               configurable: false,
               enumerable: true,
 
               get: () => {
-                const [typeOffset, type] = this.typeRecord[key];
-                return type.read(view, byteOffset + typeOffset);
+                return type.read(dataView, byteOffset + typeOffset);
               },
               set: (value) => {
-                const [typeOffset, type] = this.typeRecord[key];
-                type.write(view, byteOffset + typeOffset, value);
+                type.write(value, dataView, byteOffset + typeOffset);
               },
             }];
           },
@@ -71,5 +71,3 @@ export class Struct<
     return object as V;
   }
 }
-
-export * from "./packed.ts";
