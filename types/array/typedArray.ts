@@ -28,7 +28,8 @@ export type TypedArrayConstructor<T extends TypedArray> =
   : T extends BigInt64Array ? BigInt64ArrayConstructor
   : never;
 
-export class TypedArrayType<T extends TypedArray> implements SizedType<T>, ViewableType<T> {
+export class TypedArrayType<T extends TypedArray>
+  implements SizedType<T>, ViewableType<T> {
   Constructor: TypedArrayConstructor<T>;
   byteLength: number;
 
