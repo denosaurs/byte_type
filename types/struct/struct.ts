@@ -41,8 +41,12 @@ export class Struct<
   }
 
   write(value: V, dataView: DataView, byteOffset = 0) {
-    for (const [key, [typeOffset, type]] of Object.entries(this.typeRecord)) {
-      type.write(value[key], dataView, byteOffset + typeOffset);
+    const keys = Object.keys(this.typeRecord);
+    const len = keys.length;
+    for (let i = 0; i < len; i++) {
+      const key = keys[i];
+      const [offset, type] = this.typeRecord[key];
+      type.write(value[key], dataView, byteOffset + offset);
     }
   }
 
