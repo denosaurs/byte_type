@@ -37,7 +37,6 @@ export class Tuple<
       const [typeOffset, type] = this.typeOffsets[i];
       type.write(value[i], dataView, byteOffset + typeOffset);
     }
-
   }
 
   view(dataView: DataView, byteOffset = 0): V {

@@ -34,7 +34,10 @@ export class Struct<
     for (let i = 0; i < len; i++) {
       const k = keys[i];
       const [offset, type] = this.typeRecord[k];
-      object[k as keyof V] = type.read(dataView, byteOffset + offset) as V[keyof V];
+      object[k as keyof V] = type.read(
+        dataView,
+        byteOffset + offset,
+      ) as V[keyof V];
     }
 
     return object;
