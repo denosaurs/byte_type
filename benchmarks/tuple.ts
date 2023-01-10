@@ -9,7 +9,7 @@ const dt = new DataView(u32arr.buffer);
 Deno.bench("no-op", () => {});
 
 Deno.bench({
-  name: "Original",
+  name: "Read",
   fn: () => {
     benchTuple.read(dt)
   }
