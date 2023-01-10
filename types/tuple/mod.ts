@@ -32,10 +32,12 @@ export class Tuple<
   }
 
   write(value: V, dataView: DataView, byteOffset = 0) {
-    let i = 0;
-    for (const [typeOffset, type] of this.typeOffsets) {
-      type.write(value[i++], dataView, byteOffset + typeOffset);
+    const len = this.typeOffsets.length;
+    for (let i = 0; i < len; i++) {
+      const [typeOffset, type] = this.typeOffsets[i];
+      type.write(value[i], dataView, byteOffset + typeOffset);
     }
+
   }
 
   view(dataView: DataView, byteOffset = 0): V {
