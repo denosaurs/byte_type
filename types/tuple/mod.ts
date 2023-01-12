@@ -21,19 +21,21 @@ export class Tuple<
   }
 
   read(dataView: DataView, byteOffset = 0): V {
-    const tuple = [];
+    const len = this.typeOffsets.length;
 
-    for (const [typeOffset, type] of this.typeOffsets) {
-      tuple.push(type.read(dataView, byteOffset + typeOffset));
+    const tuple = new Array(len);
+    for (let i = 0; i < len; i++) {
+      const [typeOffset, type] = this.typeOffsets[i];
+      tuple[i] = type.read(dataView, byteOffset + typeOffset);
     }
-
     return tuple as V;
   }
 
   write(value: V, dataView: DataView, byteOffset = 0) {
-    let i = 0;
-    for (const [typeOffset, type] of this.typeOffsets) {
-      type.write(value[i++], dataView, byteOffset + typeOffset);
+    const len = this.typeOffsets.length;
+    for (let i = 0; i < len; i++) {
+      const [typeOffset, type] = this.typeOffsets[i];
+      type.write(value[i], dataView, byteOffset + typeOffset);
     }
   }
 

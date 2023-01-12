@@ -12,7 +12,7 @@ export class FixedUTF8String implements SizedType<string> {
 
   read(dataView: DataView, byteOffset = 0): string {
     return decoder.decode(
-      dataView.buffer.slice(byteOffset, byteOffset + this.byteLength),
+      new Uint8Array(dataView.buffer, byteOffset, byteOffset + this.byteLength),
     );
   }
 

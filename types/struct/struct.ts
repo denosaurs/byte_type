@@ -27,18 +27,29 @@ export class Struct<
   }
 
   read(dataView: DataView, byteOffset = 0): V {
-    const object: Record<string, unknown> = {};
+    const keys = Object.keys(this.typeRecord);
+    const len = keys.length;
+    const object = {} as V;
 
-    for (const [key, [typeOffset, type]] of Object.entries(this.typeRecord)) {
-      object[key] = type.read(dataView, byteOffset + typeOffset);
+    for (let i = 0; i < len; i++) {
+      const k = keys[i];
+      const [offset, type] = this.typeRecord[k];
+      object[k as keyof V] = type.read(
+        dataView,
+        byteOffset + offset,
+      ) as V[keyof V];
     }
 
-    return object as V;
+    return object;
   }
 
   write(value: V, dataView: DataView, byteOffset = 0) {
-    for (const [key, [typeOffset, type]] of Object.entries(this.typeRecord)) {
-      type.write(value[key], dataView, byteOffset + typeOffset);
+    const keys = Object.keys(this.typeRecord);
+    const len = keys.length;
+    for (let i = 0; i < len; i++) {
+      const key = keys[i];
+      const [offset, type] = this.typeRecord[key];
+      type.write(value[key], dataView, byteOffset + offset);
     }
   }
 
