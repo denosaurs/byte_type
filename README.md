@@ -11,10 +11,9 @@ represented as a bunch of bytes.
 ## Usage
 
 ```ts
-import { PackedStruct } from "https://deno.land/x/byte_type/types/structs/mod.ts";
-import { u32, u8 } from "https://deno.land/x/byte_type/types/primitives/mod.ts";
+import { PackedStruct, u32, u8 } from "https://deno.land/x/byte_type/mod.ts";
 
-const o = new PackedStruct({ "b": u8, "a": u32 }).object(
+const o = new PackedStruct({ "b": u8, "a": u32 }).view(
   new DataView(new ArrayBuffer(5)),
   0,
 );

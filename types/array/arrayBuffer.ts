@@ -1,6 +1,6 @@
 import { SizedType } from "../types.ts";
 
-export class ArrayBufferLikeType implements SizedType<ArrayBuffer> {
+export class ArrayBufferType implements SizedType<ArrayBuffer> {
   byteLength: number;
 
   constructor(byteLength: number) {
