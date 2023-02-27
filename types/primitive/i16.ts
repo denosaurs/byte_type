@@ -6,7 +6,7 @@ export class I16 implements AlignedType<number> {
   byteAlign = 2;
   endian;
 
-  constructor(endian: boolean = endianess()) {
+  constructor(endian: boolean = endianess) {
     this.endian = endian;
   }
 
