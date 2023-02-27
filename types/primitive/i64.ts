@@ -6,7 +6,7 @@ export class I64 implements AlignedType<bigint> {
   byteAlign = 8;
   endian;
 
-  constructor(endian: boolean = endianess()) {
+  constructor(endian: boolean = endianess) {
     this.endian = endian;
   }
 

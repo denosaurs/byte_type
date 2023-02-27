@@ -6,7 +6,7 @@ export class F32 implements AlignedType<number> {
   byteAlign = 4;
   endian;
 
-  constructor(endian: boolean = endianess()) {
+  constructor(endian: boolean = endianess) {
     this.endian = endian;
   }
 
