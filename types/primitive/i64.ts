@@ -1,5 +1,5 @@
 import { AlignedType } from "../types.ts";
-import { endianess } from "../../util.ts";
+import { endianess } from "../../utils.ts";
 
 export class I64 implements AlignedType<bigint> {
   byteLength = 8;
