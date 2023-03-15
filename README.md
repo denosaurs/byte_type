@@ -1,12 +1,12 @@
 # byte_type
 
 [![Tags](https://img.shields.io/github/release/denosaurs/byte_type)](https://github.com/denosaurs/byte_type/releases)
-[![CI Status](https://img.shields.io/github/workflow/status/denosaurs/byte_type/check)](https://github.com/denosaurs/byte_type/actions)
-[![Dependencies](https://img.shields.io/github/workflow/status/denosaurs/byte_type/depsbot?label=dependencies)](https://github.com/denosaurs/depsbot)
+[![Checks](https://img.shields.io/github/actions/workflow/status/denosaurs/byte_type/checks.yml?branch=main)](https://github.com/denosaurs/byte_type/actions)
 [![License](https://img.shields.io/github/license/denosaurs/byte_type)](https://github.com/denosaurs/byte_type/blob/master/LICENSE)
 
-`byte_type` is a small helper module for working with different raw types
-represented as a bunch of bytes.
+`byte_type` is a small helper module for efficiently working with different raw
+types represented as a bunch of bytes. Now with performance being close to
+native js performance and ergonomic interfaces!
 
 ## Usage
 
@@ -33,4 +33,4 @@ Pull request, issues and feedback are very welcome. Code style is formatted with
 
 ### Licence
 
-Copyright 2021, the denosaurs team. All rights reserved. MIT license.
+Copyright 2021-2023, the denosaurs team. All rights reserved. MIT license.

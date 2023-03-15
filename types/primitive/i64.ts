@@ -1,12 +1,12 @@
 import { AlignedType } from "../types.ts";
-import { endianess } from "../../util.ts";
+import { endianess } from "../../utils.ts";
 
 export class I64 implements AlignedType<bigint> {
   byteLength = 8;
   byteAlign = 8;
   endian;
 
-  constructor(endian: boolean = endianess()) {
+  constructor(endian: boolean = endianess) {
     this.endian = endian;
   }
 
