@@ -37,3 +37,5 @@ export class Leb128Varint implements Type<number> {
     }
   }
 }
+
+export const leb128Varint = new Leb128Varint();
