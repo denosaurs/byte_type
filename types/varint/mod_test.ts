@@ -46,11 +46,9 @@ Deno.test({
     new Leb128Varint().write(128, new DataView(data.buffer));
     assertEquals(data, Uint8Array.of(128, 1));
 
-
     data = new Uint8Array(3);
     new Leb128Varint().write(25565, new DataView(data.buffer));
     assertEquals(data, Uint8Array.of(221, 199, 1));
-
 
     data = new Uint8Array(5);
     new Leb128Varint().write(2147483647, new DataView(data.buffer));
