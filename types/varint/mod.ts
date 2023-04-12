@@ -16,7 +16,6 @@ export class Leb128Varint implements Type<number> {
       byteOffset++;
 
       if (position >= 32) {
-        console.log(position);
         throw new Error("VarInt is too big");
       }
     }
