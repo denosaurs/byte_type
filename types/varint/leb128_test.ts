@@ -1,5 +1,8 @@
 import { I32LEB128 } from "./mod.ts";
-import { assertEquals, assertThrows } from "https://deno.land/std@0.183.0/testing/asserts.ts";
+import {
+  assertEquals,
+  assertThrows,
+} from "https://deno.land/std@0.183.0/testing/asserts.ts";
 
 Deno.test({
   name: "Read Positive varint",
@@ -39,7 +42,7 @@ Deno.test({
   name: "Read Bad varint",
   fn: () => {
     const data = Uint8Array.of(255, 255, 255, 255, 255, 15);
-    assertThrows(() => new I32LEB128().read(new DataView(data.buffer)))
+    assertThrows(() => new I32LEB128().read(new DataView(data.buffer)));
   },
 });
 
@@ -87,5 +90,5 @@ Deno.test({
     decoder.write(value, dt, 0);
     const decodedValue = decoder.read(dt);
     assertEquals(decodedValue, value);
-  }
-})
+  },
+});
