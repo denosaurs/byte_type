@@ -101,23 +101,6 @@ Deno.test({
   name: "Read Bad Varlong",
   fn: () => {
     const decoder = new I64LEB128();
-    decoder.read(
-      new DataView(
-        Uint8Array.of(
-          0x80,
-          0x80,
-          0x80,
-          0x80,
-          0x80,
-          0x80,
-          0x80,
-          0x80,
-          0x80,
-          0x80,
-          0x01,
-        ).buffer,
-      ),
-    );
     assertThrows(() =>
       decoder.read(
         new DataView(
