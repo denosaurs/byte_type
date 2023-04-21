@@ -16,7 +16,7 @@ export class I32LEB128 implements Type<number> {
       byteOffset++;
 
       if (position >= 32) {
-        throw new Error("VarInt is too big");
+        throw new TypeError("I32LEB128 cannot exceed 32 bits in length");
       }
     }
 
