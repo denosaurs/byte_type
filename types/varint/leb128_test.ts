@@ -3,6 +3,7 @@ import {
   assertThrows,
 } from "https://deno.land/std@0.178.0/testing/asserts.ts";
 import { I64LEB128 } from "./leb128.ts";
+import { I32LEB128 } from "./mod.ts";
 
 Deno.test({
   name: "Read Positive VarLong",
@@ -29,30 +30,6 @@ Deno.test({
       ),
       9223372036854775807n,
     );
-import { I32LEB128 } from "./mod.ts";
-import {
-  assertEquals,
-  assertThrows,
-} from "https://deno.land/std@0.183.0/testing/asserts.ts";
-
-Deno.test({
-  name: "Read Positive varint",
-  fn: () => {
-    let data = Uint8Array.of(127);
-    let result = new I32LEB128().read(new DataView(data.buffer));
-    assertEquals(result, 127);
-
-    data = Uint8Array.of(128, 1);
-    result = new I32LEB128().read(new DataView(data.buffer));
-    assertEquals(result, 128);
-
-    data = Uint8Array.of(221, 199, 1);
-    result = new I32LEB128().read(new DataView(data.buffer));
-    assertEquals(result, 25565);
-
-    data = Uint8Array.of(255, 255, 255, 255, 7);
-    result = new I32LEB128().read(new DataView(data.buffer));
-    assertEquals(result, 2147483647);
   },
 });
 
@@ -118,20 +95,8 @@ Deno.test({
       ),
       -9223372036854775808n,
     );
-});
-
-Deno.test({
-  name: "Read Negative varint",
-  fn: () => {
-    let data = Uint8Array.of(255, 255, 255, 255, 15);
-    let result = new I32LEB128().read(new DataView(data.buffer));
-    assertEquals(result, -1);
-
-    data = Uint8Array.of(128, 128, 128, 128, 8);
-    result = new I32LEB128().read(new DataView(data.buffer));
-    assertEquals(result, -2147483648);
   },
-})
+});
 
 Deno.test({
   name: "Read Bad Varlong",
@@ -156,6 +121,54 @@ Deno.test({
         ),
       )
     );
+  },
+});
+
+Deno.test({
+  name: "Write Positive VarLong",
+  fn: () => {},
+});
+
+Deno.test({
+  name: "Write Negative VarLong",
+  fn: () => {},
+});
+
+Deno.test({
+  name: "Read Positive varint",
+  fn: () => {
+    let data = Uint8Array.of(127);
+    let result = new I32LEB128().read(new DataView(data.buffer));
+    assertEquals(result, 127);
+
+    data = Uint8Array.of(128, 1);
+    result = new I32LEB128().read(new DataView(data.buffer));
+    assertEquals(result, 128);
+
+    data = Uint8Array.of(221, 199, 1);
+    result = new I32LEB128().read(new DataView(data.buffer));
+    assertEquals(result, 25565);
+
+    data = Uint8Array.of(255, 255, 255, 255, 7);
+    result = new I32LEB128().read(new DataView(data.buffer));
+    assertEquals(result, 2147483647);
+  },
+});
+
+Deno.test({
+  name: "Read Negative varint",
+  fn: () => {
+    let data = Uint8Array.of(255, 255, 255, 255, 15);
+    let result = new I32LEB128().read(new DataView(data.buffer));
+    assertEquals(result, -1);
+
+    data = Uint8Array.of(128, 128, 128, 128, 8);
+    result = new I32LEB128().read(new DataView(data.buffer));
+    assertEquals(result, -2147483648);
+  },
+});
+
+Deno.test({
   name: "Read Bad varint",
   fn: () => {
     const data = Uint8Array.of(255, 255, 255, 255, 255, 15);
@@ -164,8 +177,6 @@ Deno.test({
 });
 
 Deno.test({
-  name: "Write Positive VarLong",
-  fn: () => {
   name: "Write Positive varint",
   fn: () => {
     let data = new Uint8Array(1);
@@ -187,8 +198,6 @@ Deno.test({
 });
 
 Deno.test({
-  name: "Write Negative VarLong",
-  fn: () => {
   name: "Write Negative varint",
   fn: () => {
     let data = new Uint8Array(5);
