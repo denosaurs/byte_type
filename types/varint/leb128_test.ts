@@ -126,12 +126,36 @@ Deno.test({
 
 Deno.test({
   name: "Write Positive VarLong",
-  fn: () => {},
+  fn: () => {
+    const encoder = new I64LEB128();
+    const buff = new Uint8Array(1);
+    encoder.write(10n, new DataView(buff.buffer));
+    assertEquals(buff, Uint8Array.of(10));
+  },
 });
 
 Deno.test({
   name: "Write Negative VarLong",
-  fn: () => {},
+  fn: () => {
+    const encoder = new I64LEB128();
+    const buff = new Uint8Array(10);
+    encoder.write(-1n, new DataView(buff.buffer));
+    assertEquals(
+      buff,
+      Uint8Array.of(
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF,
+        0x01,
+      ),
+    );
+  },
 });
 
 Deno.test({
