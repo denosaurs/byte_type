@@ -57,6 +57,6 @@ export class ArrayType<T> implements SizedType<T[]>, ViewableType<T[]> {
       });
     }
 
-    return array as T[];
+    return array;
   }
 }
