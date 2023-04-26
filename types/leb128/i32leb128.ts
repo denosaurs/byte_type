@@ -1,4 +1,4 @@
-import { Type } from "../types.ts";
+import type { Type } from "../types.ts";
 
 const SEGMENT_BITS = 0x7F;
 const CONTINUE_BIT = 0x80;
