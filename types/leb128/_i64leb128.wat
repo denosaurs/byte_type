@@ -1,9 +1,10 @@
 ;; Copyright 2023 the Blocktopus authors. All rights reserved. MIT license.
-;; This file is here as a reference as to what the embedded wasm binary is
+;; Copyright 2023 the denosaurs team. All rights reserved. MIT license.
+;; This file is here as a reference as to what the embedded wasm binary is.
 (module
-  (memory (export "mem") 1)
-  (func $read_var_long
-    (export "readVarLong")
+  (memory (export "memory") 1)
+  (func $read
+    (export "read")
     (param $ptr i32)
     (result i64 i32)
     (local $v i64)
@@ -61,8 +62,8 @@
     i32.wrap_i64
   )
 
-  (func $write_var_long
-    (export "writeVarLong")
+  (func $write
+    (export "write")
     (param $value i64)
     (result i32)
     (local $length i32)

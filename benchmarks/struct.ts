@@ -1,5 +1,4 @@
-import { AlignedStruct } from "../types/struct/mod.ts";
-import { u32 } from "../types/primitive/mod.ts";
+import { AlignedStruct, u32 } from "../mod.ts";
 
 const data = new DataView(new ArrayBuffer(8));
 

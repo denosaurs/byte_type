@@ -1,6 +1,6 @@
-import { FixedUTF8String } from "../types/string/mod.ts";
+import { FixedLengthString } from "../mod.ts";
 
-const stringThing = new FixedUTF8String(12);
+const stringThing = new FixedLengthString(12);
 
 const ab = new TextEncoder().encode("Hello World!").buffer;
 const dt = new DataView(ab);
