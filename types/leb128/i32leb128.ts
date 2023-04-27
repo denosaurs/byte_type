@@ -42,7 +42,7 @@ export class I32LEB128 implements Type<number> {
 
       dataView.setInt8(
         options.byteOffset,
-        (value & SEGMENT_BITS) | CONTINUE_BIT
+        (value & SEGMENT_BITS) | CONTINUE_BIT,
       );
       options.byteOffset++;
       value >>>= 7;
