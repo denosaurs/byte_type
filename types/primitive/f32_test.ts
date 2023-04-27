@@ -1,5 +1,5 @@
 import { assertAlmostEquals } from "std/testing/asserts.ts";
-import { f32le, f32be } from "./f32.ts";
+import { f32be, f32le } from "./f32.ts";
 
 Deno.test("f32", async ({ step }) => {
   const buff = new ArrayBuffer(4);

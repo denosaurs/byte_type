@@ -1,7 +1,7 @@
-import { i64le, i64be } from "./i64.ts";
+import { i64be, i64le } from "./i64.ts";
 import { assertEquals } from "std/testing/asserts.ts";
 
-Deno.test("i64", async  ({ step }) => {
+Deno.test("i64", async ({ step }) => {
   const buff = new ArrayBuffer(8);
   const dt = new DataView(buff);
   const value = 12n;

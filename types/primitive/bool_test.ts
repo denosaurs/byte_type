@@ -1,7 +1,7 @@
 import { bool } from "./bool.ts";
 import { assertEquals } from "std/testing/asserts.ts";
 
-Deno.test("Boolean", async  ({ step }) => {
+Deno.test("Boolean", async ({ step }) => {
   const buff = new ArrayBuffer(1);
   const dt = new DataView(buff);
 

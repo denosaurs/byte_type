@@ -1,5 +1,5 @@
 import { assertEquals } from "std/testing/asserts.ts";
-import { f64le, f64be } from "./f64.ts";
+import { f64be, f64le } from "./f64.ts";
 
 Deno.test("f64", async ({ step }) => {
   const buff = new ArrayBuffer(8);

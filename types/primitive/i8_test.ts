@@ -1,7 +1,7 @@
 import { i8 } from "./i8.ts";
 import { assertEquals } from "std/testing/asserts.ts";
 
-Deno.test("i8", async  ({ step }) => {
+Deno.test("i8", async ({ step }) => {
   const buff = new ArrayBuffer(1);
   const dt = new DataView(buff);
 

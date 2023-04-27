@@ -1,7 +1,7 @@
-import { u16le, u16be } from "./u16.ts";
+import { u16be, u16le } from "./u16.ts";
 import { assertEquals } from "std/testing/asserts.ts";
 
-Deno.test("u16", async  ({ step }) => {
+Deno.test("u16", async ({ step }) => {
   const buff = new ArrayBuffer(2);
   const dt = new DataView(buff);
   const value = 12;

@@ -1,7 +1,7 @@
-import { u32le, u32be } from "./u32.ts";
+import { u32be, u32le } from "./u32.ts";
 import { assertEquals } from "std/testing/asserts.ts";
 
-Deno.test("u32", async  ({ step }) => {
+Deno.test("u32", async ({ step }) => {
   const buff = new ArrayBuffer(4);
   const dt = new DataView(buff);
   const value = 12;
