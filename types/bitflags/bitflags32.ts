@@ -16,7 +16,7 @@ export class BitFlags32<
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
-      ret[key] = !!(flags & flag);
+      ret[key] = Boolean(flags & flag);
     }
 
     return ret as V;
