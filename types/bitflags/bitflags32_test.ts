@@ -25,7 +25,6 @@ Deno.test("bitflags32", async ({ step }) => {
 
   await step("read", () => {
     dt.setUint32(0, 0xFFFF0000);
-    console.log("0x" + dt.getUint32(0).toString(16).toUpperCase());
     assertEquals(bitflags32.read(dt), {
       16: true,
       17: true,
