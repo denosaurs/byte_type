@@ -1,4 +1,4 @@
-import { assertEquals } from "https://deno.land/std@0.178.0/testing/asserts.ts";
+import { assertEquals } from "std/testing/asserts.ts";
 import { f64le, f64be } from "./f64.ts";
 
 Deno.test("f64", async ({ step }) => {

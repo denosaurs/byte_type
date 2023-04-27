@@ -1,5 +1,5 @@
 import { u16le, u16be } from "./u16.ts";
-import { assertEquals } from "https://deno.land/std@0.178.0/testing/asserts.ts";
+import { assertEquals } from "std/testing/asserts.ts";
 
 Deno.test("u16", async  ({ step }) => {
   const buff = new ArrayBuffer(2);

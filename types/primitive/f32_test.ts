@@ -1,4 +1,4 @@
-import { assertAlmostEquals } from "https://deno.land/std@0.178.0/testing/asserts.ts";
+import { assertAlmostEquals } from "std/testing/asserts.ts";
 import { f32le, f32be } from "./f32.ts";
 
 Deno.test("f32", async ({ step }) => {

@@ -1,5 +1,5 @@
 import { u64le, u64be } from "./u64.ts";
-import { assertEquals } from "https://deno.land/std@0.178.0/testing/asserts.ts";
+import { assertEquals } from "std/testing/asserts.ts";
 
 Deno.test("u64", async  ({ step }) => {
   const buff = new ArrayBuffer(8);

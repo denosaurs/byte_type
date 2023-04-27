@@ -1,5 +1,5 @@
 import { u32le, u32be } from "./u32.ts";
-import { assertEquals } from "https://deno.land/std@0.178.0/testing/asserts.ts";
+import { assertEquals } from "std/testing/asserts.ts";
 
 Deno.test("u32", async  ({ step }) => {
   const buff = new ArrayBuffer(4);
