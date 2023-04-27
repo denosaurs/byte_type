@@ -1,13 +1,15 @@
 import type { ReadOptions, Type, WriteOptions } from "../types.ts";
 
-const SEGMENT_BITS = 0x7F;
+const SEGMENT_BITS = 0x7f;
 const CONTINUE_BIT = 0x80;
 
 export class I32LEB128 implements Type<number> {
-  read(dataView: DataView, options: ReadOptions = {}): number {
+  read(dataView: DataView, options?: ReadOptions): number {
+    options ??= {};
     options.byteOffset ??= 0;
 
-    let value = 0, position = 0;
+    let value = 0,
+      position = 0;
     while (true) {
       const currentByte = dataView.getInt8(options.byteOffset);
       value |= (currentByte & SEGMENT_BITS) << position;
@@ -18,7 +20,7 @@ export class I32LEB128 implements Type<number> {
       options.byteOffset++;
 
       if (position >= 32) {
-        throw new TypeError("I32LEB128 cannot exceed 32 bits in length");
+        throw new RangeError("I32LEB128 cannot exceed 32 bits in length");
       }
     }
 
@@ -27,7 +29,8 @@ export class I32LEB128 implements Type<number> {
     return value;
   }
 
-  write(value: number, dataView: DataView, options: WriteOptions = {}): void {
+  write(value: number, dataView: DataView, options?: WriteOptions): void {
+    options ??= {};
     options.byteOffset ??= 0;
 
     while (true) {
@@ -37,7 +40,10 @@ export class I32LEB128 implements Type<number> {
         return;
       }
 
-      dataView.setInt8(options.byteOffset, value & SEGMENT_BITS | CONTINUE_BIT);
+      dataView.setInt8(
+        options.byteOffset,
+        (value & SEGMENT_BITS) | CONTINUE_BIT
+      );
       options.byteOffset++;
       value >>>= 7;
     }
