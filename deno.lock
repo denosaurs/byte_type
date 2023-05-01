@@ -8,7 +8,8 @@
   },
   "npm": {
     "specifiers": {
-      "wabt": "wabt@1.0.32"
+      "wabt": "wabt@1.0.32",
+      "wabt@1.0.32": "wabt@1.0.32"
     },
     "packages": {
       "wabt@1.0.32": {
