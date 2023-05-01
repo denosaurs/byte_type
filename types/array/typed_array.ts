@@ -44,7 +44,7 @@ export class TypedArrayType<T extends TypedArray>
 
   write(value: T, dataView: DataView, byteOffset = 0) {
     // @ts-ignore Sets the dataView buffer to the value
-    new this.array(dataView, byteOffset).set(value);
+    new this.Constructor(dataView, byteOffset).set(value);
   }
 
   view(dataView: DataView, byteOffset = 0): T {
