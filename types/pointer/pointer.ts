@@ -27,5 +27,3 @@ export class Pointer<T> implements AlignedType<T> {
     return dataView.buffer;
   }
 }
-
-export const pointer = <T>(type: AlignedType<T>) => new Pointer(type);
