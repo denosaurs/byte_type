@@ -3,7 +3,7 @@ import { endianess } from "../../utils.ts";
 
 export class I128 implements AlignedType<bigint> {
   byteLength = 16;
-  byteAlign = 8;
+  byteAlign = 16;
   endian;
 
   constructor(endian: boolean = endianess) {
