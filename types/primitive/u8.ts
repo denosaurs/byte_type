@@ -1,15 +1,17 @@
-import { AlignedType } from "../types.ts";
+import { AlignedType, TypeOptions } from "../types.ts";
 
 export class U8 implements AlignedType<number> {
   byteLength = 1;
   byteAlign = 1;
 
-  read(dataView: DataView, byteOffset = 0): number {
-    return dataView.getUint8(byteOffset);
+  read(dataView: DataView, options: TypeOptions = {}): number {
+    options.byteOffset ??= 0;
+    return dataView.getUint8(options.byteOffset);
   }
 
-  write(value: number, dataView: DataView, byteOffset = 0) {
-    dataView.setUint8(byteOffset, value);
+  write(value: number, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
+    dataView.setUint8(options.byteOffset, value);
     return dataView.buffer;
   }
 }
