@@ -1,4 +1,4 @@
-import { SizedType } from "../types.ts";
+import { SizedType, TypeOptions } from "../types.ts";
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -10,23 +10,25 @@ export class FixedLengthString implements SizedType<string> {
     this.byteLength = byteLength;
   }
 
-  read(dataView: DataView, byteOffset = 0): string {
+  read(dataView: DataView, options: TypeOptions = {}): string {
+    options.byteOffset ??= 0;
     return decoder.decode(
       new Uint8Array(
         dataView.buffer,
-        dataView.byteOffset + byteOffset,
-        this.byteLength - byteOffset,
+        dataView.byteOffset + options.byteOffset,
+        this.byteLength,
       ),
     );
   }
 
-  write(value: string, dataView: DataView, byteOffset = 0) {
+  write(value: string, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
     encoder.encodeInto(
       value,
       new Uint8Array(
         dataView.buffer,
-        dataView.byteOffset + byteOffset,
-        this.byteLength - byteOffset,
+        dataView.byteOffset + options.byteOffset,
+        this.byteLength,
       ),
     );
   }
