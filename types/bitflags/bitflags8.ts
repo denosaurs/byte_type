@@ -1,4 +1,4 @@
-import { SizedType, ViewableType } from "../types.ts";
+import { SizedType, TypeOptions, ViewableType } from "../types.ts";
 
 export class BitFlags8<
   T extends Record<string, number>,
@@ -11,8 +11,9 @@ export class BitFlags8<
     this.flags = flags;
   }
 
-  read(dataView: DataView, byteOffset = 0): V {
-    const flags = dataView.getUint8(byteOffset);
+  read(dataView: DataView, options: TypeOptions = {}): V {
+    options.byteOffset ??= 0;
+    const flags = dataView.getUint8(options.byteOffset);
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
@@ -22,7 +23,8 @@ export class BitFlags8<
     return ret as V;
   }
 
-  write(value: V, dataView: DataView, byteOffset = 0) {
+  write(value: V, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
     let flags = 0;
 
     for (const [key, enabled] of Object.entries(value)) {
@@ -31,11 +33,12 @@ export class BitFlags8<
       }
     }
 
-    dataView.setUint8(byteOffset, flags);
+    dataView.setUint8(options.byteOffset, flags);
   }
 
-  view(dataView: DataView, byteOffset = 0): V {
-    const object = {};
+  view(dataView: DataView, options: TypeOptions = {}): V {
+    options.byteOffset ??= 0;
+    const object: Record<string, boolean> = {};
 
     Object.defineProperties(
       object,
@@ -45,18 +48,18 @@ export class BitFlags8<
           enumerable: true,
 
           get: () => {
-            return (dataView.getUint8(byteOffset) & flag) === flag;
+            return (dataView.getUint8(options.byteOffset!) & flag) === flag;
           },
           set: (value: boolean) => {
             dataView.setUint8(
-              byteOffset,
-              (dataView.getUint8(byteOffset) & 0) | Number(value),
+              options.byteOffset!,
+              (dataView.getUint8(options.byteOffset!) & 0) | Number(value),
             );
           },
         }]),
       ),
     );
 
-    return object as unknown as V;
+    return object as V;
   }
 }

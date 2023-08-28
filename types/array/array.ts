@@ -1,58 +1,68 @@
-import { SizedType, ViewableType } from "../types.ts";
+import { SizedType, TypeOptions, ViewableType } from "../types.ts";
 
 export class ArrayType<T> implements SizedType<T[]>, ViewableType<T[]> {
   byteLength: number;
-  byteStride: number;
+  bytesPerElement: number;
   type: SizedType<T>;
 
   constructor(
     type: SizedType<T>,
-    length: number,
-    byteStride: number = type.byteLength,
+    arrayLength: number,
+    bytesPerElement: number = type.byteLength,
   ) {
-    this.byteLength = length * type.byteLength;
-    this.byteStride = byteStride;
     this.type = type;
+    this.bytesPerElement = bytesPerElement;
+    this.byteLength = arrayLength * bytesPerElement;
   }
 
-  read(dataView: DataView, byteOffset = 0): T[] {
-    const array = [];
+  read(dataView: DataView, options: TypeOptions = {}): T[] {
+    options.byteOffset ??= 0;
 
+    const array = [];
+    array.length = this.byteLength / this.bytesPerElement;
+    const sliceLength = options.byteOffset + this.byteLength;
     for (
-      let i = byteOffset;
-      i < this.byteLength + byteOffset;
-      i += this.byteStride
+      ;
+      options.byteOffset < sliceLength;
+      options.byteOffset += this.bytesPerElement
     ) {
-      array.push(this.type.read(dataView, i));
+      array.push(this.type.read(dataView, options));
     }
 
     return array;
   }
 
-  write(value: T[], dataView: DataView, byteOffset = 0) {
+  write(
+    value: T[],
+    dataView: DataView,
+    options: TypeOptions = {},
+  ): void {
+    options.byteOffset ??= 0;
     for (let i = 0; i < value.length; i++) {
-      this.type.write(value[i], dataView, byteOffset);
-      byteOffset += this.byteStride;
+      this.type.write(value[i], dataView, options);
+      options.byteOffset += this.bytesPerElement;
     }
   }
 
-  view(dataView: DataView, byteOffset = 0): T[] {
+  view(dataView: DataView, options: TypeOptions = {}): T[] {
+    options.byteOffset ??= 0;
     const array: T[] = [];
+    const sliceLength = options.byteOffset + this.byteLength;
 
     for (
-      let i = byteOffset;
-      i < this.byteLength + byteOffset;
-      i += this.byteStride
+      let i = 0, offset = options.byteOffset;
+      offset < sliceLength;
+      i++, offset += this.bytesPerElement
     ) {
       Object.defineProperty(array, i, {
         configurable: false,
         enumerable: true,
 
         get: () => {
-          return this.type.read(dataView, i);
+          return this.type.read(dataView, { byteOffset: offset });
         },
         set: (value: T) => {
-          this.type.write(value, dataView, i);
+          this.type.write(value, dataView, { byteOffset: offset });
         },
       });
     }

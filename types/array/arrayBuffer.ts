@@ -1,4 +1,4 @@
-import { SizedType } from "../types.ts";
+import { SizedType, TypeOptions } from "../types.ts";
 
 export class ArrayBufferType implements SizedType<ArrayBuffer> {
   byteLength: number;
@@ -7,12 +7,17 @@ export class ArrayBufferType implements SizedType<ArrayBuffer> {
     this.byteLength = byteLength;
   }
 
-  read(dataView: DataView, byteOffset = 0): ArrayBuffer {
-    return dataView.buffer.slice(byteOffset, byteOffset + this.byteLength);
+  read(dataView: DataView, options: TypeOptions = {}): ArrayBuffer {
+    options.byteOffset ??= 0;
+    return dataView.buffer.slice(
+      options.byteOffset,
+      options.byteOffset + this.byteLength,
+    );
   }
 
-  write(value: ArrayBuffer, dataView: DataView, byteOffset = 0) {
-    new Uint8Array(dataView.buffer, byteOffset, this.byteLength).set(
+  write(value: ArrayBuffer, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
+    new Uint8Array(dataView.buffer, options.byteOffset, this.byteLength).set(
       new Uint8Array(value, 0, this.byteLength),
     );
   }

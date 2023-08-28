@@ -1,4 +1,4 @@
-import { InnerType, SizedType, ViewableType } from "../types.ts";
+import { InnerType, SizedType, TypeOptions, ViewableType } from "../types.ts";
 
 export class Tuple<
   T extends [...SizedType<unknown>[]],
@@ -20,26 +20,31 @@ export class Tuple<
     }
   }
 
-  read(dataView: DataView, byteOffset = 0): V {
+  read(dataView: DataView, options: TypeOptions = {}): V {
+    options.byteOffset ??= 0;
     const len = this.typeOffsets.length;
 
     const tuple = new Array(len);
     for (let i = 0; i < len; i++) {
       const [typeOffset, type] = this.typeOffsets[i];
-      tuple[i] = type.read(dataView, byteOffset + typeOffset);
+      options.byteOffset += typeOffset;
+      tuple[i] = type.read(dataView, options);
     }
     return tuple as V;
   }
 
-  write(value: V, dataView: DataView, byteOffset = 0) {
+  write(value: V, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
     const len = this.typeOffsets.length;
     for (let i = 0; i < len; i++) {
       const [typeOffset, type] = this.typeOffsets[i];
-      type.write(value[i], dataView, byteOffset + typeOffset);
+      options.byteOffset += typeOffset;
+      type.write(value[i], dataView, options);
     }
   }
 
-  view(dataView: DataView, byteOffset = 0): V {
+  view(dataView: DataView, options: TypeOptions = {}): V {
+    options.byteOffset ??= 0;
     const tuple: unknown[] = [];
 
     for (
@@ -54,10 +59,14 @@ export class Tuple<
         enumerable: true,
 
         get: () => {
-          return type.read(dataView, byteOffset + typeOffset);
+          return type.read(dataView, {
+            byteOffset: options.byteOffset! + typeOffset,
+          });
         },
         set: (value: T) => {
-          type.write(value, dataView, byteOffset + typeOffset);
+          type.write(value, dataView, {
+            byteOffset: options.byteOffset! + typeOffset,
+          });
         },
       });
     }
