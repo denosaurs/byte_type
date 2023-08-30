@@ -15,8 +15,8 @@ export class FixedLengthString implements SizedType<string> {
     return decoder.decode(
       new Uint8Array(
         dataView.buffer,
-        dataView.byteOffset + byteOffset,
-        this.byteLength - byteOffset,
+        dataView.byteOffset + options.byteOffset,
+        this.byteLength - options.byteOffset,
       ),
     );
   }
@@ -27,8 +27,8 @@ export class FixedLengthString implements SizedType<string> {
       value,
       new Uint8Array(
         dataView.buffer,
-        dataView.byteOffset + byteOffset,
-        this.byteLength - byteOffset,
+        dataView.byteOffset + options.byteOffset,
+        this.byteLength - options.byteOffset,
       ),
     );
   }
