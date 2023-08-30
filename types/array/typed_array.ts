@@ -1,4 +1,4 @@
-import { SizedType, ViewableType } from "../types.ts";
+import { SizedType, TypeOptions, ViewableType } from "../types.ts";
 
 export type TypedArray =
   | Uint8Array
@@ -38,19 +38,22 @@ export class TypedArrayType<T extends TypedArray>
     this.byteLength = byteLength;
   }
 
-  read(dataView: DataView, byteOffset = 0): T {
-    return this.view(dataView, byteOffset).slice() as T;
+  read(dataView: DataView, options: TypeOptions = {}): T {
+    return this.view(dataView, options).slice() as T;
   }
 
-  write(value: T, dataView: DataView, byteOffset = 0) {
-    // @ts-ignore Sets the dataView buffer to the value
-    new this.Constructor(dataView.buffer, byteOffset).set(value);
+  write(value: T, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
+    new this.Constructor(dataView.buffer, options.byteOffset)
+      // @ts-ignore Sets the dataView buffer to the value
+      .set(value);
   }
 
-  view(dataView: DataView, byteOffset = 0): T {
+  view(dataView: DataView, options: TypeOptions = {}): T {
+    options.byteOffset ??= 0;
     return new this.Constructor(
       dataView.buffer,
-      byteOffset,
+      dataView.byteOffset + options.byteOffset,
       this.byteLength,
     ) as T;
   }
