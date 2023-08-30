@@ -2,29 +2,29 @@ import { SizedType, TypeOptions, ViewableType } from "../types.ts";
 
 export class ArrayType<T> implements SizedType<T[]>, ViewableType<T[]> {
   byteLength: number;
-  bytesPerElement: number;
+  byteStride: number;
   type: SizedType<T>;
 
   constructor(
     type: SizedType<T>,
     arrayLength: number,
-    bytesPerElement: number = type.byteLength,
+    byteStride: number = type.byteLength,
   ) {
     this.type = type;
-    this.bytesPerElement = bytesPerElement;
-    this.byteLength = arrayLength * bytesPerElement;
+    this.byteStride = byteStride;
+    this.byteLength = arrayLength * byteStride;
   }
 
   read(dataView: DataView, options: TypeOptions = {}): T[] {
     options.byteOffset ??= 0;
 
     const array = [];
-    array.length = this.byteLength / this.bytesPerElement;
+    array.length = this.byteLength / this.byteStride;
     const sliceLength = options.byteOffset + this.byteLength;
     for (
       ;
       options.byteOffset < sliceLength;
-      options.byteOffset += this.bytesPerElement
+      options.byteOffset += this.byteStride
     ) {
       array.push(this.type.read(dataView, options));
     }
@@ -40,7 +40,7 @@ export class ArrayType<T> implements SizedType<T[]>, ViewableType<T[]> {
     options.byteOffset ??= 0;
     for (let i = 0; i < value.length; i++) {
       this.type.write(value[i], dataView, options);
-      options.byteOffset += this.bytesPerElement;
+      options.byteOffset += this.byteStride;
     }
   }
 
@@ -52,7 +52,7 @@ export class ArrayType<T> implements SizedType<T[]>, ViewableType<T[]> {
     for (
       let i = 0, offset = options.byteOffset;
       offset < sliceLength;
-      i++, offset += this.bytesPerElement
+      i++, offset += this.byteStride
     ) {
       Object.defineProperty(array, i, {
         configurable: false,
