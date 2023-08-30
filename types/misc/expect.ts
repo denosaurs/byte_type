@@ -1,4 +1,4 @@
-import { Type } from "../types.ts";
+import { Type, TypeOptions } from "../types.ts";
 
 export class Expect<
   V,
@@ -12,12 +12,17 @@ export class Expect<
     this.expected = expected;
   }
 
-  is(value: V | undefined, dataView: DataView, byteOffset = 0): boolean {
-    return this.type.read(dataView, byteOffset) === value ?? this.expected;
+  is(
+    value: V | undefined,
+    dataView: DataView,
+    options: TypeOptions = {},
+  ): boolean {
+    return this.type.read(dataView, options) === value ??
+      this.expected;
   }
 
-  read(dataView: DataView, byteOffset = 0): V {
-    const value = this.type.read(dataView, byteOffset);
+  read(dataView: DataView, options: TypeOptions = {}): V {
+    const value = this.type.read(dataView, options);
 
     if (value !== this.expected) {
       throw new TypeError(`Expected ${this.expected} found ${value}`);
@@ -26,7 +31,7 @@ export class Expect<
     return value;
   }
 
-  write(value: V | undefined, dataView: DataView, byteOffset = 0) {
-    this.type.write(value ?? this.expected, dataView, byteOffset);
+  write(value: V | undefined, dataView: DataView, options: TypeOptions = {}) {
+    this.type.write(value ?? this.expected, dataView, options);
   }
 }

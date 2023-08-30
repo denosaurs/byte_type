@@ -1,18 +1,19 @@
-import { SizedType, ViewableType } from "../types.ts";
+import { SizedType, TypeOptions, ViewableType } from "../types.ts";
 
 export class BitFlags32<
   T extends Record<string, number>,
   V extends Record<string, boolean> = { [K in keyof T]: boolean },
 > implements SizedType<V>, ViewableType<V> {
-  byteLength = 1;
+  byteLength = 4;
   flags: T;
 
   constructor(flags: T) {
     this.flags = flags;
   }
 
-  read(dataView: DataView, byteOffset = 0): V {
-    const flags = dataView.getUint32(byteOffset);
+  read(dataView: DataView, options: TypeOptions = {}): V {
+    options.byteOffset ??= 0;
+    const flags = dataView.getUint32(options.byteOffset);
     const ret: Record<string, boolean> = {};
 
     for (const [key, flag] of Object.entries(this.flags)) {
@@ -22,7 +23,8 @@ export class BitFlags32<
     return ret as V;
   }
 
-  write(value: V, dataView: DataView, byteOffset = 0) {
+  write(value: V, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
     let flags = 0;
 
     for (const [key, enabled] of Object.entries(value)) {
@@ -31,10 +33,11 @@ export class BitFlags32<
       }
     }
 
-    dataView.setUint32(byteOffset, flags);
+    dataView.setUint32(options.byteOffset, flags);
   }
 
-  view(dataView: DataView, byteOffset = 0): V {
+  view(dataView: DataView, options: TypeOptions = {}): V {
+    options.byteOffset ??= 0;
     const object = {};
 
     Object.defineProperties(
@@ -45,21 +48,17 @@ export class BitFlags32<
           enumerable: true,
 
           get: () => {
-            return (dataView.getUint32(byteOffset) & flag) === flag;
+            return (dataView.getUint32(options.byteOffset!) & flag) === flag;
           },
           set: (value: boolean) => {
             dataView.setUint32(
-              byteOffset,
-              (dataView.getUint32(byteOffset) & 0) | Number(value),
+              options.byteOffset!,
+              (dataView.getUint32(options.byteOffset!) & 0) | Number(value),
             );
           },
         }]),
       ),
     );
-
-    Object.defineProperty(object, "valueOf", {
-      value: () => this.read(dataView, byteOffset),
-    });
 
     return object as unknown as V;
   }

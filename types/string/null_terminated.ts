@@ -1,15 +1,15 @@
-import { Type } from "../types.ts";
+import { Type, TypeOptions } from "../types.ts";
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
 
 export class NullTerminatedString implements Type<string> {
-  read(dataView: DataView, byteOffset = 0): string {
-    let endByteLength;
-
-    for (let i = byteOffset; i < dataView.byteLength; i++) {
+  read(dataView: DataView, options: TypeOptions = {}): string {
+    options.byteOffset ??= 0;
+    let endByteLength = null;
+    for (let i = options.byteOffset; i < dataView.byteLength; i++) {
       if (dataView.getUint8(i) === 0) {
-        endByteLength = i - byteOffset;
+        endByteLength = i - options.byteOffset;
         break;
       }
     }
@@ -21,15 +21,16 @@ export class NullTerminatedString implements Type<string> {
     }
 
     return decoder.decode(
-      new Uint8Array(dataView.buffer, byteOffset, endByteLength),
+      new Uint8Array(dataView.buffer, options.byteOffset, endByteLength),
     );
   }
 
-  write(value: string, dataView: DataView, byteOffset = 0) {
+  write(value: string, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
     value += "\0";
     encoder.encodeInto(
       value,
-      new Uint8Array(dataView.buffer, byteOffset, value.length),
+      new Uint8Array(dataView.buffer, options.byteOffset, value.length),
     );
   }
 }

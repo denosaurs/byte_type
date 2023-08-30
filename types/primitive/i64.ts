@@ -1,4 +1,4 @@
-import { AlignedType } from "../types.ts";
+import { AlignedType, TypeOptions } from "../types.ts";
 import { endianess } from "../../utils.ts";
 
 export class I64 implements AlignedType<bigint> {
@@ -10,12 +10,14 @@ export class I64 implements AlignedType<bigint> {
     this.endian = endian;
   }
 
-  read(dataView: DataView, byteOffset = 0): bigint {
-    return dataView.getBigInt64(byteOffset, this.endian);
+  read(dataView: DataView, options: TypeOptions = {}): bigint {
+    options.byteOffset ??= 0;
+    return dataView.getBigInt64(options.byteOffset, this.endian);
   }
 
-  write(value: bigint, dataView: DataView, byteOffset = 0) {
-    dataView.setBigInt64(byteOffset, value, this.endian);
+  write(value: bigint, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
+    dataView.setBigInt64(options.byteOffset, value, this.endian);
     return dataView.buffer;
   }
 }

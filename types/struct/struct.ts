@@ -1,4 +1,10 @@
-import { AlignedType, InnerType, SizedType, ViewableType } from "../types.ts";
+import {
+  AlignedType,
+  InnerType,
+  SizedType,
+  TypeOptions,
+  ViewableType,
+} from "../types.ts";
 
 export class Struct<
   T extends Record<string, SizedType<unknown> | AlignedType<unknown>>,
@@ -26,7 +32,8 @@ export class Struct<
     this.byteAlign = byteAlign;
   }
 
-  read(dataView: DataView, byteOffset = 0): V {
+  read(dataView: DataView, options: TypeOptions = {}): V {
+    options.byteOffset ??= 0;
     const keys = Object.keys(this.typeRecord);
     const len = keys.length;
     const object = {} as V;
@@ -34,26 +41,30 @@ export class Struct<
     for (let i = 0; i < len; i++) {
       const k = keys[i];
       const [offset, type] = this.typeRecord[k];
+      options.byteOffset += offset;
       object[k as keyof V] = type.read(
         dataView,
-        byteOffset + offset,
+        options,
       ) as V[keyof V];
     }
 
     return object;
   }
 
-  write(value: V, dataView: DataView, byteOffset = 0) {
+  write(value: V, dataView: DataView, options: TypeOptions = {}) {
+    options.byteOffset ??= 0;
     const keys = Object.keys(this.typeRecord);
     const len = keys.length;
     for (let i = 0; i < len; i++) {
       const key = keys[i];
       const [offset, type] = this.typeRecord[key];
-      type.write(value[key], dataView, byteOffset + offset);
+      options.byteOffset += offset;
+      type.write(value[key], dataView, options);
     }
   }
 
-  view(dataView: DataView, byteOffset = 0): V {
+  view(dataView: DataView, options: TypeOptions = {}): V {
+    options.byteOffset ??= 0;
     const object = {};
 
     Object.defineProperties(
@@ -68,10 +79,14 @@ export class Struct<
               enumerable: true,
 
               get: () => {
-                return type.read(dataView, byteOffset + typeOffset);
+                return type.read(dataView, {
+                  byteOffset: options.byteOffset! + typeOffset,
+                });
               },
               set: (value) => {
-                type.write(value, dataView, byteOffset + typeOffset);
+                type.write(value, dataView, {
+                  byteOffset: options.byteOffset! + typeOffset,
+                });
               },
             }];
           },
