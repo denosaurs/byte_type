@@ -58,7 +58,7 @@ export class Struct<
     for (let i = 0; i < len; i++) {
       const key = keys[i];
       const [offset, type] = this.typeRecord[key];
-      options.byteOffset += +offset;
+      options.byteOffset += offset;
       type.write(value[key], dataView, options);
     }
   }

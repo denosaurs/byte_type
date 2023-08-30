@@ -2,7 +2,7 @@ import { I32LEB128 } from "./mod.ts";
 import {
   assertEquals,
   assertThrows,
-} from "https://deno.land/std@0.183.0/testing/asserts.ts";
+} from "https://deno.land/std@0.200.0/assert/mod.ts";
 
 Deno.test({
   name: "Read Positive varint",
