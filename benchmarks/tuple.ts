@@ -1,5 +1,4 @@
-import { Tuple } from "../types/tuple/mod.ts";
-import { u32 } from "../types/primitive/u32.ts";
+import { Tuple, u32 } from "../mod.ts";
 
 const benchTuple = new Tuple([u32, u32]);
 const u32arr = new Uint32Array([2, 4]);
