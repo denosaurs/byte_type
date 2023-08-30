@@ -39,7 +39,18 @@ export class TypedArrayType<T extends TypedArray>
   }
 
   read(dataView: DataView, options: TypeOptions = {}): T {
-    return this.view(dataView, options).slice() as T;
+    options.byteOffset ??= 0;
+    const copy = new ArrayBuffer(dataView.byteLength - options.byteOffset);
+    const view = new this.Constructor(copy);
+    view.set(
+      new this.Constructor(
+        dataView.buffer,
+        dataView.byteOffset + options.byteOffset,
+        this.byteLength,
+        // deno-lint-ignore no-explicit-any
+      ) as any,
+    );
+    return view as T;
   }
 
   write(value: T, dataView: DataView, options: TypeOptions = {}) {
@@ -51,7 +62,7 @@ export class TypedArrayType<T extends TypedArray>
     options.byteOffset ??= 0;
     return new this.Constructor(
       dataView.buffer,
-      options.byteOffset,
+      dataView.byteOffset + options.byteOffset,
       this.byteLength,
     ) as T;
   }
