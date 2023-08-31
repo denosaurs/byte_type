@@ -1,4 +1,4 @@
-import type { AlignedType } from "../types.ts";
+import type { AlignedType, TypeOptions } from "../types.ts";
 import { u64 } from "../mod.ts";
 
 export class PointerValue implements AlignedType<Deno.PointerValue> {
@@ -14,17 +14,21 @@ export class PointerValue implements AlignedType<Deno.PointerValue> {
     this.pointerType = pointerType;
   }
 
-  read(dataView: DataView, byteOffset = 0): Deno.PointerValue {
+  read(dataView: DataView, options: TypeOptions = {}): Deno.PointerValue {
     return Deno.UnsafePointer.create(
-      this.pointerType.read(dataView, byteOffset),
+      this.pointerType.read(dataView, options),
     );
   }
 
-  write(value: Deno.PointerValue, dataView: DataView, byteOffset = 0) {
+  write(
+    value: Deno.PointerValue,
+    dataView: DataView,
+    options: TypeOptions = {},
+  ) {
     this.pointerType.write(
       Deno.UnsafePointer.value(value),
       dataView,
-      byteOffset,
+      options,
     );
   }
 }
