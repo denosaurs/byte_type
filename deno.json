@@ -2,9 +2,5 @@
   "imports": {
     "std/": "https://deno.land/std@0.184.0/",
     "wabt": "npm:wabt@1.0.32"
-  },
-  "tasks": {
-    "build": "deno task build_i64leb128",
-    "build_i64leb128": "deno run --allow-read --allow-write ./scripts/build_i64leb128.ts"
   }
 }
