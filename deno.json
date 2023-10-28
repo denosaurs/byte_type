@@ -1,6 +1,5 @@
 {
   "imports": {
-    "std/": "https://deno.land/std@0.184.0/",
-    "wabt": "npm:wabt@1.0.32"
+    "std/": "https://deno.land/std@0.184.0/"
   }
 }
