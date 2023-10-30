@@ -31,6 +31,8 @@ export class TaggedUnion<
     const discriminant = u8.readUnaligned(dt, options);
     const codec = this.#record[discriminant];
     if (!codec) throw new Error("Unknown discriminant");
+
+    super.alignOffset(options);
     return codec.read(dt, options) as V;
   }
 
@@ -38,7 +40,8 @@ export class TaggedUnion<
     const discriminant = u8.readUnaligned(dt, options);
     const codec = this.#record[discriminant];
     if (!codec) throw new Error("Unknown discriminant");
-    return codec.readUnaligned(dt, options) as V;
+    const result = codec.readUnaligned(dt, options) as V;
+    return result;
   }
 
   writeUnaligned(
@@ -50,6 +53,7 @@ export class TaggedUnion<
     const codec = this.#record[discriminant];
     if (!codec) throw new Error("Unknown discriminant");
 
+    super.alignOffset(options);
     u8.writeUnaligned(discriminant, dt, options);
     codec.write(variant, dt, options);
   }
