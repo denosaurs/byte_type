@@ -7,6 +7,7 @@ export class F64 extends SizedType<number> {
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): number {
+    super.rangeCheck(dt.byteLength, options.byteOffset);
     const value = dt.getFloat64(options.byteOffset, this.littleEndian);
     super.incrementOffset(options);
     return value;
@@ -17,6 +18,7 @@ export class F64 extends SizedType<number> {
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
+    super.rangeCheck(dt.byteLength, options.byteOffset);
     dt.setFloat64(options.byteOffset, value, this.littleEndian);
     super.incrementOffset(options);
   }

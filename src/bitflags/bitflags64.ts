@@ -13,6 +13,8 @@ export class BitFlags64<
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): O {
+    super.rangeCheck(dt.byteLength, options.byteOffset);
+
     const returnObject: Record<string, boolean> = {};
 
     const byteBag = dt.getBigUint64(options.byteOffset);
@@ -30,6 +32,8 @@ export class BitFlags64<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
+    super.rangeCheck(dt.byteLength, options.byteOffset);
+
     let flags = 0n;
 
     for (const { 0: key, 1: flagValue } of Object.entries(this.#record)) {
