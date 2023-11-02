@@ -2,6 +2,7 @@ import { AlignedType, type Options } from "../types/mod.ts";
 import { CONTINUE_BIT, SEGMENT_BITS } from "./_common.ts";
 
 const SEGMENT_BITS_N = BigInt(SEGMENT_BITS);
+const CONTINUE_BIT_N = BigInt(CONTINUE_BIT);
 
 const AB = new ArrayBuffer(8);
 const U32_VIEW = new Uint32Array(AB);
@@ -17,18 +18,23 @@ export class I64Leb128 extends AlignedType<bigint> {
     // Copyright 2023 the Blocktopus authors. All rights reserved. MIT license.
     // Modified to use a `DataView` instead of a `Uint8Array` and to return i64 instead of u64
 
-    I64_VIEW[0] = 0n;
+    U64_VIEW[0] = 0n;
     let intermediate = 0;
     let position = 0;
-    let i = 0;
 
-    let byte = 0;
-    do {
-      byte = dt.getUint8(options.byteOffset);
-      if (i === 11) throw new RangeError("Maximum size reached");
+    for (let i = 0;; i++) {
+      if (i === 10) throw new Error("Maximum size reached");
 
+      const byte = dt.getUint8(options.byteOffset);
+
+      // 1. Take the lower 7 bits of the byte.
+      // 2. Shift the bits into the correct position.
+      // 3. Bitwise OR it with the intermediate value
+      // QUIRK: in the 5th (and 10th) iteration of this loop it will overflow on the shift.
+      // This causes only the lower 4 bits to be shifted into place and removing the upper 3 bits
       intermediate |= (byte & SEGMENT_BITS) << position;
 
+      // If the intermediate value is full. Write it to the view
       if (position === 28) {
         // Write to the view
         U32_VIEW[0] = intermediate;
@@ -40,15 +46,17 @@ export class I64Leb128 extends AlignedType<bigint> {
       }
 
       position += 7;
-      i++;
       super.incrementOffset(options, 1);
-      // Keep going while there is a continuation bit
-    } while ((byte & CONTINUE_BIT) === CONTINUE_BIT);
+      // if no continuation bit.
+      // then write the intermediate value to the empty "slot"
+      if ((byte & CONTINUE_BIT) !== CONTINUE_BIT) {
+        // if the first slot is taken. Take the second slot
+        U32_VIEW[Number(i > 3)] = intermediate;
+        break;
+      }
+    }
 
-    // Write the intermediate value to the "empty" slot
-    // if the first slot is taken. Take the second slot
-    U32_VIEW[Number(i > 3)] = intermediate;
-
+    // Cast the two u32's to a i64 bigint
     return I64_VIEW[0];
   }
 
@@ -59,19 +67,42 @@ export class I64Leb128 extends AlignedType<bigint> {
   ): void {
     I64_VIEW[0] = value;
     value = U64_VIEW[0];
-    do {
+
+    while (true) {
+      if (Number(value & CONTINUE_BIT_N) === 0) {
+        dt.setUint8(options.byteOffset, Number(value));
+        return;
+      }
+
       dt.setUint8(
         options.byteOffset,
         Number(value & SEGMENT_BITS_N) | CONTINUE_BIT,
       );
       super.incrementOffset(options, 1);
       value >>= 7n;
-    } while ((value & ~SEGMENT_BITS_N) !== 0n);
+    }
+  }
 
-    dt.setUint8(
-      options.byteOffset,
-      Number(value & SEGMENT_BITS_N),
-    );
+  writeUnaligned2(
+    value: bigint,
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
+    I64_VIEW[0] = value;
+    value = U64_VIEW[0];
+    while (true) {
+      if ((value & ~SEGMENT_BITS_N) === 0n) {
+        dt.setUint8(options.byteOffset, Number(value));
+        return;
+      }
+
+      dt.setUint8(
+        options.byteOffset,
+        Number(value & SEGMENT_BITS_N | CONTINUE_BIT_N),
+      );
+      super.incrementOffset(options, 1);
+      value >>= 7n;
+    }
   }
 }
 
