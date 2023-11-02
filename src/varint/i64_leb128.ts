@@ -82,28 +82,6 @@ export class I64Leb128 extends AlignedType<bigint> {
       value >>= 7n;
     }
   }
-
-  writeUnaligned2(
-    value: bigint,
-    dt: DataView,
-    options: Options = { byteOffset: 0 },
-  ): void {
-    I64_VIEW[0] = value;
-    value = U64_VIEW[0];
-    while (true) {
-      if ((value & ~SEGMENT_BITS_N) === 0n) {
-        dt.setUint8(options.byteOffset, Number(value));
-        return;
-      }
-
-      dt.setUint8(
-        options.byteOffset,
-        Number(value & SEGMENT_BITS_N | CONTINUE_BIT_N),
-      );
-      super.incrementOffset(options, 1);
-      value >>= 7n;
-    }
-  }
 }
 
 export const i64leb128 = new I64Leb128();
