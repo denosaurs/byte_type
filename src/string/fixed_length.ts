@@ -2,8 +2,8 @@ import { type Options, SizedType } from "../types/mod.ts";
 import { TEXT_DECODER, TEXT_ENCODER } from "./_common.ts";
 
 export class FixedLength extends SizedType<string> {
-  constructor(length: number, byteAlignment = 1) {
-    super(length, byteAlignment);
+  constructor(length: number) {
+    super(length, 1);
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): string {

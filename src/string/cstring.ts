@@ -1,9 +1,9 @@
-import { type Options, UnsizedType } from "../types/mod.ts";
+import { AlignedType, type Options } from "../types/mod.ts";
 import { TEXT_DECODER, TEXT_ENCODER } from "./_common.ts";
 
-export class CString extends UnsizedType<string> {
+export class CString extends AlignedType<string> {
   constructor() {
-    super();
+    super(1);
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): string {
