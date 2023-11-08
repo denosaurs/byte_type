@@ -25,5 +25,15 @@ Deno.test({
         type.read(dt, { byteOffset: 2 });
       }, RangeError);
     });
+
+    await t.step("Inequal length", () => {
+      assertThrows(() => {
+        type.writePacked([1, 2, 3, 4], dt);
+      }, TypeError);
+
+      assertThrows(() => {
+        type.writeUnaligned([1, 2, 3, 4], dt);
+      }, TypeError);
+    });
   },
 });
