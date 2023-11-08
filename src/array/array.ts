@@ -36,7 +36,7 @@ export class ArrayType<T> extends AlignedType<T[]> implements Packed<T[]> {
     options: Options = { byteOffset: 0 },
   ): void {
     if (value.length !== this.length) {
-      throw new TypeError("`T[].length !== ArrayType<T>.length`");
+      throw new TypeError("T[].length !== ArrayType<T>.length");
     }
 
     this.type.writeUnaligned(value[0], dt, options);
@@ -53,7 +53,7 @@ export class ArrayType<T> extends AlignedType<T[]> implements Packed<T[]> {
     options: Options = { byteOffset: 0 },
   ): void {
     if (value.length !== this.length) {
-      throw new TypeError("`T[].length !== ArrayType<T>.length`");
+      throw new TypeError("T[].length !== ArrayType<T>.length");
     }
 
     for (let i = 0; i < this.length; i++) {
