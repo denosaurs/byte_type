@@ -7,5 +7,5 @@ export const isLittleEndian = (() => {
   return new Uint16Array(buffer)[0] === 256;
 })();
 
-export const align = (byteSize: number, alignment: number) =>
-  (byteSize + alignment - 1) & ~(alignment - 1);
+export const align = (unaligned: number, alignment: number) =>
+  (unaligned + alignment - 1) & ~(alignment - 1);

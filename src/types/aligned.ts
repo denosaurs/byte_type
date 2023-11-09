@@ -30,6 +30,6 @@ export abstract class AlignedType<T> extends UnsizedType<T>
   }
 
   protected alignOffset(options: Options) {
-    options.byteOffset = align(options.byteOffset, this.byteAlignment);
+    super.incrementOffset(options, align(options.byteOffset, this.byteAlignment));
   }
 }
