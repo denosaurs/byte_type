@@ -1,5 +1,5 @@
-import { Options } from "./_common.ts";
-import { Unsized } from "./unsized.ts";
+import type { Options } from "./_common.ts";
+import type { Unsized } from "./unsized.ts";
 
 export interface Packed<T> extends Unsized<T> {
   readPacked(dt: DataView, options?: Options): T;
