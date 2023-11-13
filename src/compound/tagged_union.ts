@@ -8,7 +8,7 @@ import {
 } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";
 
-type Fn<T> = (value: T) => number;
+type Fn<V> = (variant: V) => InnerType<AlignedType<number>>;
 
 export class TaggedUnion<
   T extends Record<number, AlignedType<unknown>>,
