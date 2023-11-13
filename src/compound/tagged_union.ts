@@ -6,6 +6,7 @@ import {
   type Packed,
   type ValueOf,
 } from "../types/mod.ts";
+import { getBiggestAlignment } from "../util.ts";
 
 type Fn<T> = (value: T) => number;
 
@@ -19,11 +20,12 @@ export class TaggedUnion<
   #variantFinder: Fn<V>;
   #discriminant: AlignedType<number>;
 
-  constructor(input: T, variantFinder: Fn<V>, discriminantCodec: AlignedType<number> = u8) {
-    // Find biggest alignment
-    const byteAlignment = Object.values(input)
-      .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
-    super(byteAlignment);
+  constructor(
+    input: T,
+    variantFinder: Fn<V>,
+    discriminantCodec: AlignedType<number> = u8,
+  ) {
+    super(getBiggestAlignment(input));
     this.#record = input;
     this.#variantFinder = variantFinder;
     this.#discriminant = discriminantCodec;

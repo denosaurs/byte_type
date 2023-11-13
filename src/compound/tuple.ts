@@ -4,6 +4,7 @@ import {
   type Options,
   type Packed,
 } from "../types/mod.ts";
+import { getBiggestAlignment } from "../util.ts";
 
 export class Tuple<
   T extends [...AlignedType<unknown>[]],
@@ -12,10 +13,7 @@ export class Tuple<
   #tupleTypes: T;
 
   constructor(types: T) {
-    // Find biggest alignment
-    const byteAlignment = Object.values(types)
-      .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
-    super(byteAlignment);
+    super(getBiggestAlignment(types));
     this.#tupleTypes = types;
   }
 

@@ -4,6 +4,7 @@ import {
   type Options,
   type Packed,
 } from "../types/mod.ts";
+import { getBiggestAlignment } from "../util.ts";
 
 export class Struct<
   T extends Record<string, AlignedType<unknown>>,
@@ -14,10 +15,7 @@ export class Struct<
   #record: Array<[string, AlignedType<unknown>]>;
 
   constructor(input: T) {
-    // Find biggest alignment
-    const byteAlignment = Object.values(input)
-      .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
-    super(byteAlignment);
+    super(getBiggestAlignment(input));
     this.#record = Object.entries(input);
   }
 
