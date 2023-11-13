@@ -22,6 +22,8 @@ export class Struct<
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
+    if (this.#record.length === 0) return {} as V;
+
     const result: Record<string, unknown> = {};
     const { 0: key, 1: type } = this.#record[0];
     result[key] = type.readUnaligned(dt, options);
@@ -37,6 +39,8 @@ export class Struct<
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
+    if (this.#record.length === 0) return {} as V;
+
     const result: Record<string, unknown> = {};
 
     const len = this.#record.length;
@@ -53,6 +57,8 @@ export class Struct<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
+    if (this.#record.length === 0) return;
+
     const { 0: key, 1: type } = this.#record[0];
     type.writeUnaligned(value[key], dt, options);
 
@@ -68,6 +74,8 @@ export class Struct<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
+    if (this.#record.length === 0) return;
+
     const len = this.#record.length;
     for (let i = 0; i < len; i++) {
       const { 0: key, 1: type } = this.#record[i];

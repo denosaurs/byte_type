@@ -6,6 +6,8 @@ export class ArrayType<T> extends AlignedType<T[]> implements Packed<T[]> {
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
+    if (this.length === 0) return [];
+
     const result = [];
     result.length = this.length;
     result[0] = this.type.readUnaligned(dt, options);
@@ -19,6 +21,7 @@ export class ArrayType<T> extends AlignedType<T[]> implements Packed<T[]> {
   }
 
   readPacked(dt: DataView, options?: Options | undefined): T[] {
+    if (this.length === 0) return [];
     const result = [];
     result.length = this.length;
 
@@ -38,6 +41,7 @@ export class ArrayType<T> extends AlignedType<T[]> implements Packed<T[]> {
     if (value.length !== this.length) {
       throw new TypeError("T[].length !== ArrayType<T>.length");
     }
+    if (value.length === 0) return;
 
     this.type.writeUnaligned(value[0], dt, options);
 
@@ -55,6 +59,7 @@ export class ArrayType<T> extends AlignedType<T[]> implements Packed<T[]> {
     if (value.length !== this.length) {
       throw new TypeError("T[].length !== ArrayType<T>.length");
     }
+    if (value.length === 0) return;
 
     for (let i = 0; i < this.length; i++) {
       this.type.writeUnaligned(value[i], dt, options);
