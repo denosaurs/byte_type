@@ -31,7 +31,7 @@ const data: InnerType<typeof codec> = {
 const jsonString = JSON.stringify(data);
 const msgPackBuff = msgpackWrite(data);
 
-const ARRAY_BUFFER = new ArrayBuffer(30);
+const ARRAY_BUFFER = new ArrayBuffer(codec.byteLength);
 const DATA_VIEW = new DataView(ARRAY_BUFFER);
 
 Deno.bench("nop", () => {});
