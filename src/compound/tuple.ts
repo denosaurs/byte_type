@@ -12,7 +12,10 @@ export class Tuple<
   #tupleTypes: T;
 
   constructor(types: T) {
-    super(1);
+    // Find biggest alignment
+    const byteAlignment = Object.values(types)
+      .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
+    super(byteAlignment);
     this.#tupleTypes = types;
   }
 
