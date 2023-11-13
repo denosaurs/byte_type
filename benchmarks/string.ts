@@ -1,6 +1,6 @@
-import { String } from "../mod.ts";
+import { Strings } from "../mod.ts";
 
-const stringThing = new String.FixedLength(12);
+const stringThing = new Strings.FixedLength(12);
 
 const ab = new TextEncoder().encode("Hello World!").buffer;
 const dt = new DataView(ab);
