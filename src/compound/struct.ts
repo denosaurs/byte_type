@@ -11,24 +11,25 @@ export class Struct<
     [K in keyof T]: InnerType<T[K]>;
   },
 > extends AlignedType<V> implements Packed<V> {
-  #record: T;
+  #record: Array<[string, AlignedType<unknown>]>;
 
   constructor(input: T) {
     // Find biggest alignment
     const byteAlignment = Object.values(input)
       .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
     super(byteAlignment);
-    this.#record = input;
+    this.#record = Object.entries(input);
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
     const result: Record<string, unknown> = {};
-    const entries = Object.entries(this.#record);
-    const { 0: key, 1: type } = entries[0];
+    const { 0: key, 1: type } = this.#record[0];
     result[key] = type.readUnaligned(dt, options);
 
-    for (let i = 1; i < entries.length; i++) {
-      const { 0: key, 1: type } = entries[i];
+    const len = this.#record.length;
+
+    for (let i = 1; i < len; i++) {
+      const { 0: key, 1: type } = this.#record[i];
       result[key] = type.read(dt, options);
     }
 
@@ -37,10 +38,10 @@ export class Struct<
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
     const result: Record<string, unknown> = {};
-    const entries = Object.entries(this.#record);
 
-    for (let i = 0; i < entries.length; i++) {
-      const { 0: key, 1: type } = entries[i];
+    const len = this.#record.length;
+    for (let i = 0; i < len; i++) {
+      const { 0: key, 1: type } = this.#record[i];
       result[key] = type.readUnaligned(dt, options);
     }
 
@@ -52,12 +53,12 @@ export class Struct<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    const entries = Object.entries(this.#record);
-    const { 0: key, 1: type } = entries[0];
+    const { 0: key, 1: type } = this.#record[0];
     type.writeUnaligned(value[key], dt, options);
 
-    for (let i = 1; i < entries.length; i++) {
-      const { 0: key, 1: type } = entries[i];
+    const len = this.#record.length;
+    for (let i = 1; i < len; i++) {
+      const { 0: key, 1: type } = this.#record[i];
       type.write(value[key], dt, options);
     }
   }
@@ -67,10 +68,9 @@ export class Struct<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    const entries = Object.entries(this.#record);
-
-    for (let i = 0; i < entries.length; i++) {
-      const { 0: key, 1: type } = entries[i];
+    const len = this.#record.length;
+    for (let i = 0; i < len; i++) {
+      const { 0: key, 1: type } = this.#record[i];
       type.writeUnaligned(value[key], dt, options);
     }
   }
