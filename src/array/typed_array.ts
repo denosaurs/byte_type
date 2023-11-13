@@ -70,7 +70,7 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
   }
 }
 
-function gen<E extends TypedConstructors<TypedArrays>>(
+function createTypedArrayType<E extends TypedConstructors<TypedArrays>>(
   constructor: E,
 ) {
   return class extends TypedArray<ReturnType<E["from"]>> {
