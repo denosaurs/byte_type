@@ -31,7 +31,7 @@ export class TaggedUnion<
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
     const discriminant = this.#discriminant.readUnaligned(dt, options);
     const codec = this.#record[discriminant];
-    if (!codec) throw new Error("Unknown discriminant");
+    if (!codec) throw new TypeError("Unknown discriminant");
 
     super.alignOffset(options);
     return codec.read(dt, options) as V;
