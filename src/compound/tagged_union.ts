@@ -17,21 +17,22 @@ export class TaggedUnion<
 > extends AlignedType<V> implements Packed<V> {
   #record: T;
   #variantFinder: Fn<V>;
-  #discriminant = u8;
+  #discriminant: AlignedType<number>;
 
-  constructor(input: T, variantFinder: Fn<V>) {
+  constructor(input: T, discriminantCodec: AlignedType<number>, variantFinder: Fn<V>) {
     // Find biggest alignment
     const byteAlignment = Object.values(input)
       .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
     super(byteAlignment);
     this.#record = input;
     this.#variantFinder = variantFinder;
+    this.#discriminant = discriminantCodec;
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
     const discriminant = this.#discriminant.readUnaligned(dt, options);
     const codec = this.#record[discriminant];
-    if (!codec) throw new Error("Unknown discriminant");
+    if (!codec) throw new TypeError("Unknown discriminant");
 
     super.alignOffset(options);
     return codec.read(dt, options) as V;
@@ -40,7 +41,7 @@ export class TaggedUnion<
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
     const discriminant = this.#discriminant.readUnaligned(dt, options);
     const codec = this.#record[discriminant];
-    if (!codec) throw new Error("Unknown discriminant");
+    if (!codec) throw new TypeError("Unknown discriminant");
     const result = codec.readUnaligned(dt, options) as V;
     return result;
   }
@@ -52,7 +53,7 @@ export class TaggedUnion<
   ): void {
     const discriminant = this.#variantFinder(variant);
     const codec = this.#record[discriminant];
-    if (!codec) throw new Error("Unknown discriminant");
+    if (!codec) throw new TypeError("Unknown discriminant");
 
     super.alignOffset(options);
     u8.writeUnaligned(discriminant, dt, options);
@@ -66,7 +67,7 @@ export class TaggedUnion<
   ): void {
     const discriminant = this.#variantFinder(variant);
     const codec = this.#record[discriminant];
-    if (!codec) throw new Error("Unknown discriminant");
+    if (!codec) throw new TypeError("Unknown discriminant");
 
     this.#discriminant.writeUnaligned(discriminant, dt, options);
     codec.writeUnaligned(variant, dt, options);
