@@ -17,6 +17,7 @@ export class TaggedUnion<
 > extends AlignedType<V> implements Packed<V> {
   #record: T;
   #variantFinder: Fn<V>;
+  #discriminant = u8;
 
   constructor(input: T, variantFinder: Fn<V>) {
     // Find biggest alignment
@@ -28,7 +29,7 @@ export class TaggedUnion<
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    const discriminant = u8.readUnaligned(dt, options);
+    const discriminant = this.#discriminant.readUnaligned(dt, options);
     const codec = this.#record[discriminant];
     if (!codec) throw new Error("Unknown discriminant");
 
@@ -37,7 +38,7 @@ export class TaggedUnion<
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    const discriminant = u8.readUnaligned(dt, options);
+    const discriminant = this.#discriminant.readUnaligned(dt, options);
     const codec = this.#record[discriminant];
     if (!codec) throw new Error("Unknown discriminant");
     const result = codec.readUnaligned(dt, options) as V;
