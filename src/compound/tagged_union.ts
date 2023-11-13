@@ -67,7 +67,7 @@ export class TaggedUnion<
     const codec = this.#record[discriminant];
     if (!codec) throw new Error("Unknown discriminant");
 
-    u8.writeUnaligned(discriminant, dt, options);
+    this.#discriminant.writeUnaligned(discriminant, dt, options);
     codec.writeUnaligned(variant, dt, options);
   }
 }
