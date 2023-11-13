@@ -80,14 +80,14 @@ function createTypedArrayType<E extends TypedConstructors<TypedArrays>>(
   };
 }
 
-export const Uint8ArrayType = gen(Uint8Array);
-export const Uint8ClampedArrayType = gen(Uint8ClampedArray);
-export const Int8ArrayType = gen(Int8Array);
-export const Uint16ArrayType = gen(Uint16Array);
-export const Int16ArrayType = gen(Int16Array);
-export const Uint32ArrayType = gen(Uint32Array);
-export const Int32ArrayType = gen(Int32Array);
-export const Float32ArrayType = gen(Float32Array);
-export const Float64ArrayType = gen(Float64Array);
-export const BigUint64ArrayType = gen(BigUint64Array);
-export const BigInt64ArrayType = gen(BigInt64Array);
+export const Uint8ArrayType = createTypedArrayType(Uint8Array);
+export const Uint8ClampedArrayType = createTypedArrayType(Uint8ClampedArray);
+export const Int8ArrayType = createTypedArrayType(Int8Array);
+export const Uint16ArrayType = createTypedArrayType(Uint16Array);
+export const Int16ArrayType = createTypedArrayType(Int16Array);
+export const Uint32ArrayType = createTypedArrayType(Uint32Array);
+export const Int32ArrayType = createTypedArrayType(Int32Array);
+export const Float32ArrayType = createTypedArrayType(Float32Array);
+export const Float64ArrayType = createTypedArrayType(Float64Array);
+export const BigUint64ArrayType = createTypedArrayType(BigUint64Array);
+export const BigInt64ArrayType = createTypedArrayType(BigInt64Array);
