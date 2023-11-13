@@ -19,7 +19,7 @@ export class TaggedUnion<
   #variantFinder: Fn<V>;
   #discriminant = u8;
 
-  constructor(input: T, variantFinder: Fn<V>) {
+  constructor(input: T, discriminator: Type<...> = u8) {
     // Find biggest alignment
     const byteAlignment = Object.values(input)
       .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
