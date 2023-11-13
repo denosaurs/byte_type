@@ -46,7 +46,7 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
       dt.buffer,
       dt.byteOffset + options.byteOffset,
       this.length,
-    ) as T;
+    ).slice() as T;
 
     super.incrementOffset(options);
     return value;
