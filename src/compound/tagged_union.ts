@@ -8,22 +8,23 @@ import {
 } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";
 
-type Fn<V> = (variant: V) => InnerType<AlignedType<number>>;
+type FindDiscriminant<V, D extends number | string = number | string> = (variant: V) => D;
 
 export class TaggedUnion<
-  T extends Record<number, AlignedType<unknown>>,
+  T extends Record<number | string, AlignedType<unknown>>,
+  D extends AlignedType<keyof T> = AlignedType<keyof T>,
   V extends ValueOf<{ [K in keyof T]: InnerType<T[K]> }> = ValueOf<
     { [K in keyof T]: InnerType<T[K]> }
   >,
 > extends AlignedType<V> implements Packed<V> {
   #record: T;
-  #variantFinder: Fn<V>;
-  #discriminant: AlignedType<number>;
+  #variantFinder: FindDiscriminant<V>;
+  #discriminant: D;
 
   constructor(
     input: T,
-    variantFinder: Fn<V>,
-    discriminantCodec: AlignedType<number> = u8,
+    variantFinder: FindDiscriminant<V>,
+    discriminantCodec: D = u8 as unknown as D,
   ) {
     super(getBiggestAlignment(input));
     this.#record = input;
@@ -58,7 +59,7 @@ export class TaggedUnion<
     if (!codec) throw new TypeError("Unknown discriminant");
 
     super.alignOffset(options);
-    u8.writeUnaligned(discriminant, dt, options);
+    this.#discriminant.writeUnaligned(discriminant, dt, options);
     codec.write(variant, dt, options);
   }
 
