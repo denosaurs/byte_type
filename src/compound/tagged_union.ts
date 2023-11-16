@@ -12,19 +12,18 @@ type FindDiscriminant<V, D extends number | string = number | string> = (variant
 
 export class TaggedUnion<
   T extends Record<number | string, AlignedType<unknown>>,
-  D extends AlignedType<keyof T> = AlignedType<keyof T>,
   V extends ValueOf<{ [K in keyof T]: InnerType<T[K]> }> = ValueOf<
     { [K in keyof T]: InnerType<T[K]> }
   >,
 > extends AlignedType<V> implements Packed<V> {
   #record: T;
   #variantFinder: FindDiscriminant<V>;
-  #discriminant: D;
+  #discriminant: AlignedType<number | string>;
 
   constructor(
     input: T,
     variantFinder: FindDiscriminant<V>,
-    discriminantCodec: D = u8 as unknown as D,
+    discriminantCodec: AlignedType<number | string> = u8,
   ) {
     super(getBiggestAlignment(input));
     this.#record = input;
