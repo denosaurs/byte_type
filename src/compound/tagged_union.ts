@@ -8,27 +8,36 @@ import {
 } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";
 
-type FindDiscriminant<V, D extends number | string = number | string> = (variant: V) => D;
+type FindDiscriminant<V, D extends number | string> = (variant: V) => D;
+
+type Keys<T> = Exclude<keyof T, symbol>;
 
 export class TaggedUnion<
-  T extends Record<number | string, AlignedType<unknown>>,
+  T extends Record<string | number, AlignedType<unknown>>,
   V extends ValueOf<{ [K in keyof T]: InnerType<T[K]> }> = ValueOf<
     { [K in keyof T]: InnerType<T[K]> }
   >,
 > extends AlignedType<V> implements Packed<V> {
   #record: T;
-  #variantFinder: FindDiscriminant<V>;
-  #discriminant: AlignedType<number | string>;
+  #variantFinder: FindDiscriminant<V, Keys<T>>;
+  #discriminant: AlignedType<string | number>;
 
   constructor(
     input: T,
-    variantFinder: FindDiscriminant<V>,
-    discriminantCodec: AlignedType<number | string> = u8,
+    variantFinder: FindDiscriminant<V, Keys<T>>,
+    discriminant: Keys<T> extends string ? AlignedType<string>
+      : AlignedType<number>,
+  );
+
+  constructor(
+    input: T,
+    variantFinder: FindDiscriminant<V, Keys<T>>,
+    discriminant: AlignedType<string | number> = u8,
   ) {
     super(getBiggestAlignment(input));
     this.#record = input;
     this.#variantFinder = variantFinder;
-    this.#discriminant = discriminantCodec;
+    this.#discriminant = discriminant ?? u8;
   }
 
   readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
