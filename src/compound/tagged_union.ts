@@ -31,7 +31,7 @@ export class TaggedUnion<
   constructor(
     input: T,
     variantFinder: FindDiscriminant<V, Keys<T>>,
-    discriminant?: Keys<T> extends number ? AlignedType<number> : never
+    discriminant?: Keys<T> extends number ? AlignedType<number> : never,
   );
 
   constructor(
