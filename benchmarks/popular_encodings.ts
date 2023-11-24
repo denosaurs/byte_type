@@ -1,14 +1,14 @@
-import { cstring, InnerType, Struct, u32, u8 } from "../mod.ts";
+import { InnerType, Strings, Struct, u32, u8 } from "../mod.ts";
 import {
   decode as msgpackRead,
   encode as msgpackWrite,
-} from "std/msgpack/mod.ts";
+} from "https://deno.land/std@0.208.0/msgpack/mod.ts";
 
 const descriptor = {
   handIndex: u8,
   fieldIndex: u8,
   card: new Struct({
-    name: cstring,
+    name: new Strings.FixedLength(11),
     hp: u8,
     damage: u8,
     shield: u32,
@@ -31,7 +31,7 @@ const data: InnerType<typeof codec> = {
 const jsonString = JSON.stringify(data);
 const msgPackBuff = msgpackWrite(data);
 
-const ARRAY_BUFFER = new ArrayBuffer(codec.byteLength);
+const ARRAY_BUFFER = new ArrayBuffer(20);
 const DATA_VIEW = new DataView(ARRAY_BUFFER);
 
 Deno.bench("nop", () => {});
