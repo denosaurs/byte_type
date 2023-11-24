@@ -20,7 +20,7 @@ export class ArrayType<T> extends AlignedType<T[]> implements Packed<T[]> {
     return result;
   }
 
-  readPacked(dt: DataView, options?: Options | undefined): T[] {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
     if (this.length === 0) return [];
     const result = [];
     result.length = this.length;
