@@ -18,25 +18,9 @@ export class Struct<
     this.#record = Object.entries(input);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    if (this.#record.length === 0) return {} as V;
-
-    const result: Record<string, unknown> = {};
-    const { 0: key, 1: type } = this.#record[0];
-    result[key] = type.readUnaligned(dt, options);
-
-    const len = this.#record.length;
-
-    for (let i = 1; i < len; i++) {
-      const { 0: key, 1: type } = this.#record[i];
-      result[key] = type.read(dt, options);
-    }
-
-    return result as V;
-  }
-
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
     if (this.#record.length === 0) return {} as V;
+
     const result: Record<string, unknown> = {};
 
     for (let i = 0; i < this.#record.length; i++) {
@@ -48,11 +32,12 @@ export class Struct<
   }
 
   read(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    const result: Record<string, unknown> = {};
-    const entries = Object.entries(this.#record);
+    if (this.#record.length === 0) return {} as V;
 
-    for (let i = 0; i < entries.length; i++) {
-      const { 0: key, 1: type } = entries[i];
+    const result: Record<string, unknown> = {};
+
+    for (let i = 0; i < this.#record.length; i++) {
+      const { 0: key, 1: type } = this.#record[i];
       result[key] = type.read(dt, options);
     }
 
@@ -66,9 +51,18 @@ export class Struct<
   ): void {
     if (this.#record.length === 0) return;
 
-    for (let i = 0; i < entries.length; i++) {
-      const { 0: key, 1: type } = entries[i];
+    for (let i = 0; i < this.#record.length; i++) {
+      const { 0: key, 1: type } = this.#record[i];
       type.writePacked(value[key], dt, options);
+    }
+  }
+
+  write(value: V, dt: DataView, options: Options = { byteOffset: 0}): void {
+    if (this.#record.length === 0) return;
+
+    for (let i = 0; i < this.#record.length; i++) {
+      const { 0: key, 1: type } = this.#record[i];
+      type.write(value[key], dt, options);
     }
   }
 }

@@ -16,20 +16,6 @@ export class Tuple<
     this.#tupleTypes = types;
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    if (this.#tupleTypes.length === 0) return [] as unknown as V;
-
-    const result: unknown[] = [];
-    result.length = this.#tupleTypes.length;
-
-    result[0] = this.#tupleTypes[0].readUnaligned(dt, options);
-    for (let i = 1; i < result.length; i++) {
-      result[i] = this.#tupleTypes[i].read(dt, options);
-    }
-
-    return result as V;
-  }
-
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
     if (this.#tupleTypes.length === 0) return [] as unknown as V;
 
