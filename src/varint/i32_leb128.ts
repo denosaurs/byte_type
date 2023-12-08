@@ -18,7 +18,7 @@ export class I32Leb128 extends AlignedType<number> {
       options.byteOffset++;
 
       if (position >= 32) {
-        throw new TypeError("I32LEB128 cannot exceed 32 bits in length");
+        throw new RangeError("I32LEB128 cannot exceed 32 bits in length");
       }
     }
 

@@ -1,5 +1,8 @@
 import { cstring, InnerType, Struct, u32, u8 } from "../mod.ts";
-import { decode as msgpackRead, encode as msgpackWrite } from "std/msgpack/mod.ts";
+import {
+  decode as msgpackRead,
+  encode as msgpackWrite,
+} from "std/msgpack/mod.ts";
 
 const descriptor = {
   handIndex: u8,
@@ -28,11 +31,10 @@ const data: InnerType<typeof codec> = {
 const jsonString = JSON.stringify(data);
 const msgPackBuff = msgpackWrite(data);
 
-const ARRAY_BUFFER = new ArrayBuffer(30);
+const ARRAY_BUFFER = new ArrayBuffer(codec.byteLength);
 const DATA_VIEW = new DataView(ARRAY_BUFFER);
 
 Deno.bench("nop", () => {});
-
 
 Deno.bench({
   name: "JSON (Write)",
@@ -57,7 +59,7 @@ Deno.bench({
   group: "roundtrip",
   baseline: true,
   fn: () => {
-    JSON.stringify(data),
+    JSON.stringify(data);
     JSON.parse(jsonString);
   },
 });
@@ -90,7 +92,6 @@ Deno.bench({
 Deno.bench({
   name: "MsgPack (Write)",
   group: "write",
-  baseline: true,
   fn: () => {
     msgpackWrite(data);
   },
@@ -99,7 +100,6 @@ Deno.bench({
 Deno.bench({
   name: "MsgPack (Read)",
   group: "read",
-  baseline: true,
   fn: () => {
     msgpackRead(msgPackBuff);
   },
@@ -108,7 +108,6 @@ Deno.bench({
 Deno.bench({
   name: "MsgPack (Roundtrip)",
   group: "roundtrip",
-  baseline: true,
   fn: () => {
     msgpackWrite(data);
     msgpackRead(msgPackBuff);

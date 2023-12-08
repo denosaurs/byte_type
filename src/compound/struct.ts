@@ -3,29 +3,44 @@ import {
   type InnerType,
   type Options,
 } from "../types/mod.ts";
+import { getBiggestAlignment } from "../util.ts";
 
 export class Struct<
   T extends Record<string, AlignedType<unknown>>,
   V extends { [K in keyof T]: InnerType<T[K]> } = {
     [K in keyof T]: InnerType<T[K]>;
   },
-> extends AlignedType<V> {
-  #record: T;
+> extends AlignedType<V>  {
+  #record: Array<[string, AlignedType<unknown>]>;
 
   constructor(input: T) {
-    // Find biggest alignment
-    const byteAlignment = Object.values(input)
-      .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
-    super(byteAlignment);
-    this.#record = input;
+    super(getBiggestAlignment(input));
+    this.#record = Object.entries(input);
+  }
+
+  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
+    if (this.#record.length === 0) return {} as V;
+
+    const result: Record<string, unknown> = {};
+    const { 0: key, 1: type } = this.#record[0];
+    result[key] = type.readUnaligned(dt, options);
+
+    const len = this.#record.length;
+
+    for (let i = 1; i < len; i++) {
+      const { 0: key, 1: type } = this.#record[i];
+      result[key] = type.read(dt, options);
+    }
+
+    return result as V;
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
+    if (this.#record.length === 0) return {} as V;
     const result: Record<string, unknown> = {};
-    const entries = Object.entries(this.#record);
 
-    for (let i = 0; i < entries.length; i++) {
-      const { 0: key, 1: type } = entries[i];
+    for (let i = 0; i < this.#record.length; i++) {
+      const { 0: key, 1: type } = this.#record[i];
       result[key] = type.readPacked(dt, options);
     }
 
@@ -49,7 +64,7 @@ export class Struct<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    const entries = Object.entries(this.#record);
+    if (this.#record.length === 0) return;
 
     for (let i = 0; i < entries.length; i++) {
       const { 0: key, 1: type } = entries[i];

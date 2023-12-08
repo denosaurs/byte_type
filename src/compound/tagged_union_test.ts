@@ -11,7 +11,7 @@ Deno.test({
       0: u32le,
       1: u8,
       2: u8,
-    }, (a) => a === 32 ? 0 : a);
+    }, (a) => a === 32 ? 0 : 1);
 
     await t.step("Read", () => {
       dt.setUint8(0, 1);
