@@ -1,8 +1,4 @@
-import {
-  AlignedType,
-  type InnerType,
-  type Options,
-} from "../types/mod.ts";
+import { AlignedType, type InnerType, type Options } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";
 
 export class Tuple<
@@ -52,10 +48,7 @@ export class Tuple<
     }
   }
 
-  write(value: V,
-    dt: DataView,
-    options: Options = { byteOffset: 0 },
-  ): void {
+  write(value: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
     for (let i = 0; i < this.#tupleTypes.length; i++) {
       this.#tupleTypes[i].write(value[i], dt, options);
     }

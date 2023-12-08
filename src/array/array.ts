@@ -47,7 +47,7 @@ export class ArrayType<T> extends AlignedType<T[]> {
     }
   }
 
-    write(
+  write(
     value: T[],
     dt: DataView,
     options: Options = { byteOffset: 0 },

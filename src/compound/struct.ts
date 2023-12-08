@@ -1,8 +1,4 @@
-import {
-  AlignedType,
-  type InnerType,
-  type Options,
-} from "../types/mod.ts";
+import { AlignedType, type InnerType, type Options } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";
 
 export class Struct<
@@ -10,7 +6,7 @@ export class Struct<
   V extends { [K in keyof T]: InnerType<T[K]> } = {
     [K in keyof T]: InnerType<T[K]>;
   },
-> extends AlignedType<V>  {
+> extends AlignedType<V> {
   #record: Array<[string, AlignedType<unknown>]>;
 
   constructor(input: T) {
@@ -57,7 +53,7 @@ export class Struct<
     }
   }
 
-  write(value: V, dt: DataView, options: Options = { byteOffset: 0}): void {
+  write(value: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
     if (this.#record.length === 0) return;
 
     for (let i = 0; i < this.#record.length; i++) {
