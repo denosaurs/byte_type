@@ -6,14 +6,14 @@ export class I32 extends SizedType<number> {
     super(4, 4);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): number {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): number {
     super.rangeCheck(dt.byteLength, options.byteOffset);
     const value = dt.getInt32(options.byteOffset, this.littleEndian);
     super.incrementOffset(options);
     return value;
   }
 
-  writeUnaligned(
+  writePacked(
     value: number,
     dt: DataView,
     options: Options = { byteOffset: 0 },

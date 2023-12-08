@@ -6,7 +6,7 @@ export class I32Leb128 extends AlignedType<number> {
     super(1);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): number {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): number {
     let value = 0, position = 0;
     while (true) {
       const currentByte = dt.getInt8(options.byteOffset);
@@ -25,7 +25,7 @@ export class I32Leb128 extends AlignedType<number> {
     return value;
   }
 
-  writeUnaligned(
+  writePacked(
     value: number,
     dt: DataView,
     options: Options = { byteOffset: 0 },

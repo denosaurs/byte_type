@@ -5,7 +5,7 @@ export class Bool extends SizedType<boolean> {
     super(1, 1);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): boolean {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): boolean {
     super.rangeCheck(dt.byteLength, options.byteOffset);
 
     const value = !!dt.getInt8(options.byteOffset);
@@ -13,7 +13,7 @@ export class Bool extends SizedType<boolean> {
     return value;
   }
 
-  writeUnaligned(
+  writePacked(
     value: boolean,
     dt: DataView,
     options: Options = { byteOffset: 0 },

@@ -2,7 +2,6 @@ import {
   AlignedType,
   type InnerType,
   type Options,
-  type Packed,
 } from "../types/mod.ts";
 
 export class Struct<
@@ -10,7 +9,7 @@ export class Struct<
   V extends { [K in keyof T]: InnerType<T[K]> } = {
     [K in keyof T]: InnerType<T[K]>;
   },
-> extends AlignedType<V> implements Packed<V> {
+> extends AlignedType<V> {
   #record: T;
 
   constructor(input: T) {
@@ -21,45 +20,28 @@ export class Struct<
     this.#record = input;
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    const result: Record<string, unknown> = {};
-    const entries = Object.entries(this.#record);
-    const { 0: key, 1: type } = entries[0];
-    result[key] = type.readUnaligned(dt, options);
-
-    for (let i = 1; i < entries.length; i++) {
-      const { 0: key, 1: type } = entries[i];
-      result[key] = type.read(dt, options);
-    }
-
-    return result as V;
-  }
-
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
     const result: Record<string, unknown> = {};
     const entries = Object.entries(this.#record);
 
     for (let i = 0; i < entries.length; i++) {
       const { 0: key, 1: type } = entries[i];
-      result[key] = type.readUnaligned(dt, options);
+      result[key] = type.readPacked(dt, options);
     }
 
     return result as V;
   }
 
-  writeUnaligned(
-    value: V,
-    dt: DataView,
-    options: Options = { byteOffset: 0 },
-  ): void {
+  read(dt: DataView, options: Options = { byteOffset: 0 }): V {
+    const result: Record<string, unknown> = {};
     const entries = Object.entries(this.#record);
-    const { 0: key, 1: type } = entries[0];
-    type.writeUnaligned(value[key], dt, options);
 
-    for (let i = 1; i < entries.length; i++) {
+    for (let i = 0; i < entries.length; i++) {
       const { 0: key, 1: type } = entries[i];
-      type.write(value[key], dt, options);
+      result[key] = type.read(dt, options);
     }
+
+    return result as V;
   }
 
   writePacked(
@@ -71,7 +53,7 @@ export class Struct<
 
     for (let i = 0; i < entries.length; i++) {
       const { 0: key, 1: type } = entries[i];
-      type.writeUnaligned(value[key], dt, options);
+      type.writePacked(value[key], dt, options);
     }
   }
 }

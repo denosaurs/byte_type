@@ -17,16 +17,16 @@ export abstract class AlignedType<T> extends UnsizedType<T>
     super();
   }
 
-  /** In most cases you don't need to reimplement read. as long as your `readUnaligned` is correct */
+  /** In most cases you don't need to reimplement read. as long as your `readPacked` is correct */
   read(dt: DataView, options: Options = { byteOffset: 0 }): T {
     this.alignOffset(options);
-    return this.readUnaligned(dt, options);
+    return this.readPacked(dt, options);
   }
 
-  /** In most cases you don't need to reimplement write. as long as your `writeUnaligned` is correct */
+  /** In most cases you don't need to reimplement write. as long as your `readPacked` is correct */
   write(value: T, dt: DataView, options: Options = { byteOffset: 0 }): void {
     this.alignOffset(options);
-    this.writeUnaligned(value, dt, options);
+    this.writePacked(value, dt, options);
   }
 
   protected alignOffset(options: Options) {

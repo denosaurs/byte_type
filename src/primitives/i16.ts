@@ -6,14 +6,14 @@ export class I16 extends SizedType<number> {
     super(2, 2);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): number {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): number {
     super.rangeCheck(dt.byteLength, options.byteOffset);
     const value = dt.getInt16(options.byteOffset, this.littleEndian);
     super.incrementOffset(options);
     return value;
   }
 
-  writeUnaligned(
+  writePacked(
     value: number,
     dt: DataView,
     options: Options = { byteOffset: 0 },

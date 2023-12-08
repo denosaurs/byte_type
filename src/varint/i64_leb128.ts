@@ -14,7 +14,7 @@ export class I64Leb128 extends AlignedType<bigint> {
     super(1);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): bigint {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): bigint {
     // Copyright 2023 the Blocktopus authors. All rights reserved. MIT license.
     // Modified to use a `DataView` instead of a `Uint8Array` and to return i64 instead of u64
 
@@ -62,7 +62,7 @@ export class I64Leb128 extends AlignedType<bigint> {
     return I64_VIEW[0];
   }
 
-  writeUnaligned(
+  writePacked(
     value: bigint,
     dt: DataView,
     options: Options = { byteOffset: 0 },
