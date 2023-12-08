@@ -5,7 +5,7 @@ export class ArrayBufferType extends SizedType<ArrayBuffer> {
     super(byteSize, byteAlignment);
   }
 
-  readUnaligned(
+  readPacked(
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): ArrayBuffer {
@@ -27,7 +27,7 @@ export class ArrayBufferType extends SizedType<ArrayBuffer> {
     return resultAB;
   }
 
-  writeUnaligned(
+  writePacked(
     value: ArrayBuffer,
     dt: DataView,
     options: Options = { byteOffset: 0 },

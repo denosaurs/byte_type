@@ -12,7 +12,7 @@ export class BitFlags8<
     this.#record = record;
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): O {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): O {
     super.rangeCheck(dt.byteLength, options.byteOffset);
 
     const returnObject: Record<string, boolean> = {};
@@ -27,7 +27,7 @@ export class BitFlags8<
     return returnObject as O;
   }
 
-  writeUnaligned(
+  writePacked(
     value: O,
     dt: DataView,
     options: Options = { byteOffset: 0 },
