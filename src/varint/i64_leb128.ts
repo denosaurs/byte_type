@@ -1,4 +1,4 @@
-import { AlignedType, type Options } from "../types/mod.ts";
+import { UnsizedType, type Options } from "../types/mod.ts";
 import { CONTINUE_BIT, SEGMENT_BITS } from "./_common.ts";
 
 const SEGMENT_BITS_N = BigInt(SEGMENT_BITS);
@@ -9,7 +9,7 @@ const U32_VIEW = new Uint32Array(AB);
 const I64_VIEW = new BigInt64Array(AB);
 const U64_VIEW = new BigUint64Array(AB);
 
-export class I64Leb128 extends AlignedType<bigint> {
+export class I64Leb128 extends UnsizedType<bigint> {
   constructor() {
     super(1);
   }

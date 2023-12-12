@@ -1,13 +1,13 @@
-import { AlignedType, type InnerType, type Options } from "../types/mod.ts";
+import { UnsizedType, type InnerType, type Options } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";
 
 export class Struct<
-  T extends Record<string, AlignedType<unknown>>,
+  T extends Record<string, UnsizedType<unknown>>,
   V extends { [K in keyof T]: InnerType<T[K]> } = {
     [K in keyof T]: InnerType<T[K]>;
   },
-> extends AlignedType<V> {
-  #record: Array<[string, AlignedType<unknown>]>;
+> extends UnsizedType<V> {
+  #record: Array<[string, UnsizedType<unknown>]>;
 
   constructor(input: T) {
     super(getBiggestAlignment(input));

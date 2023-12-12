@@ -1,7 +1,7 @@
-import { AlignedType, type Options } from "../types/mod.ts";
+import { UnsizedType, type Options } from "../types/mod.ts";
 import { CONTINUE_BIT, SEGMENT_BITS } from "./_common.ts";
 
-export class I32Leb128 extends AlignedType<number> {
+export class I32Leb128 extends UnsizedType<number> {
   constructor() {
     super(1);
   }

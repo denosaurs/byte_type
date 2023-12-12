@@ -1,7 +1,7 @@
-import { AlignedType, type Options } from "../types/mod.ts";
+import { UnsizedType, type Options } from "../types/mod.ts";
 import { TEXT_DECODER, TEXT_ENCODER } from "./_common.ts";
 
-export class CString extends AlignedType<string> {
+export class CString extends UnsizedType<string> {
   constructor() {
     super(1);
   }

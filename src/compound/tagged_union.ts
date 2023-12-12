@@ -1,6 +1,6 @@
 import { u8 } from "../primitives/mod.ts";
 import {
-  AlignedType,
+  UnsizedType,
   type InnerType,
   type Options,
   type ValueOf,
@@ -12,31 +12,31 @@ type FindDiscriminant<V, D extends number | string> = (variant: V) => D;
 type Keys<T> = Exclude<keyof T, symbol>;
 
 export class TaggedUnion<
-  T extends Record<string | number, AlignedType<unknown>>,
+  T extends Record<string | number, UnsizedType<unknown>>,
   V extends ValueOf<{ [K in keyof T]: InnerType<T[K]> }> = ValueOf<
     { [K in keyof T]: InnerType<T[K]> }
   >,
-> extends AlignedType<V> {
+> extends UnsizedType<V> {
   #record: T;
   #variantFinder: FindDiscriminant<V, Keys<T>>;
-  #discriminant: AlignedType<string | number>;
+  #discriminant: UnsizedType<string | number>;
 
   constructor(
     input: T,
     variantFinder: FindDiscriminant<V, Keys<T>>,
-    discriminant: Keys<T> extends string ? AlignedType<string> : never,
+    discriminant: Keys<T> extends string ? UnsizedType<string> : never,
   );
 
   constructor(
     input: T,
     variantFinder: FindDiscriminant<V, Keys<T>>,
-    discriminant?: Keys<T> extends number ? AlignedType<number> : never,
+    discriminant?: Keys<T> extends number ? UnsizedType<number> : never,
   );
 
   constructor(
     input: T,
     variantFinder: FindDiscriminant<V, Keys<T>>,
-    discriminant: AlignedType<string | number> = u8,
+    discriminant: UnsizedType<string | number> = u8,
   ) {
     super(getBiggestAlignment(input));
     this.#record = input;

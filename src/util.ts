@@ -1,4 +1,4 @@
-import type { AlignedType } from "./mod.ts";
+import type { UnsizedType } from "./mod.ts";
 
 /**
  * The endianess of your machine, true if little endian and false if big endian.
@@ -15,7 +15,7 @@ export const align = (unaligned: number, alignment: number) =>
 type ArrayOrRecord<T> = T[] | Record<string | number, T>;
 
 export const getBiggestAlignment = (
-  input: ArrayOrRecord<AlignedType<unknown>>,
+  input: ArrayOrRecord<UnsizedType<unknown>>,
 ) =>
   Object.values(input)
     .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);

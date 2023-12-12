@@ -1,7 +1,7 @@
-import { AlignedType, type Options } from "../types/mod.ts";
+import { UnsizedType, type Options } from "../types/mod.ts";
 
-export class ArrayType<T> extends AlignedType<T[]> {
-  constructor(readonly type: AlignedType<T>, readonly length: number) {
+export class ArrayType<T> extends UnsizedType<T[]> {
+  constructor(readonly type: UnsizedType<T>, readonly length: number) {
     super(type.byteAlignment);
   }
 
@@ -25,7 +25,7 @@ export class ArrayType<T> extends AlignedType<T[]> {
 
     for (let i = 0; i < this.length; i++) {
       result[i] = this.type.read(dt, options);
-      // No need for the increment offset. This is handled by the `type.readPacked` function
+      // No need for the increment offset. This is handled by the `type.read` function
     }
 
     return result as T[];
@@ -43,7 +43,7 @@ export class ArrayType<T> extends AlignedType<T[]> {
 
     for (let i = 0; i < this.length; i++) {
       this.type.writePacked(value[i], dt, options);
-      // No need for the increment offset. This is handled by the `type.writeUnaligned` function
+      // No need for the increment offset. This is handled by the `type.writePacked` function
     }
   }
 
@@ -59,7 +59,7 @@ export class ArrayType<T> extends AlignedType<T[]> {
 
     for (let i = 0; i < this.length; i++) {
       this.type.write(value[i], dt, options);
-      // No need for the increment offset. This is handled by the `type.writeUnaligned` function
+      // No need for the increment offset. This is handled by the `type.write` function
     }
   }
 }

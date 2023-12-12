@@ -1,10 +1,10 @@
-import { AlignedType, type InnerType, type Options } from "../types/mod.ts";
+import { UnsizedType, type InnerType, type Options } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";
 
 export class Tuple<
-  T extends [...AlignedType<unknown>[]],
+  T extends [...UnsizedType<unknown>[]],
   V extends [...unknown[]] = { [I in keyof T]: InnerType<T[I]> },
-> extends AlignedType<V> {
+> extends UnsizedType<V> {
   #tupleTypes: T;
 
   constructor(types: T) {
