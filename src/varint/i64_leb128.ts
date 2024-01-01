@@ -1,4 +1,4 @@
-import { UnsizedType, type Options } from "../types/mod.ts";
+import { type Options, UnsizedType } from "../types/mod.ts";
 import { CONTINUE_BIT, SEGMENT_BITS } from "./_common.ts";
 
 const SEGMENT_BITS_N = BigInt(SEGMENT_BITS);

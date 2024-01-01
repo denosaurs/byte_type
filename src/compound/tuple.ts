@@ -1,4 +1,4 @@
-import { UnsizedType, type InnerType, type Options } from "../types/mod.ts";
+import { type InnerType, type Options, UnsizedType } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";
 
 export class Tuple<

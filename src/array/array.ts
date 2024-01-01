@@ -1,4 +1,4 @@
-import { UnsizedType, type Options } from "../types/mod.ts";
+import { type Options, UnsizedType } from "../types/mod.ts";
 
 export class ArrayType<T> extends UnsizedType<T[]> {
   constructor(readonly type: UnsizedType<T>, readonly length: number) {

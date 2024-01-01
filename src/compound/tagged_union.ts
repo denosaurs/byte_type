@@ -1,8 +1,8 @@
 import { u8 } from "../primitives/mod.ts";
 import {
-  UnsizedType,
   type InnerType,
   type Options,
+  UnsizedType,
   type ValueOf,
 } from "../types/mod.ts";
 import { getBiggestAlignment } from "../util.ts";

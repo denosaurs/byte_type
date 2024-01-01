@@ -1,4 +1,4 @@
-import { UnsizedType, type Options } from "../types/mod.ts";
+import { type Options, UnsizedType } from "../types/mod.ts";
 import { CONTINUE_BIT, SEGMENT_BITS } from "./_common.ts";
 
 export class I32Leb128 extends UnsizedType<number> {

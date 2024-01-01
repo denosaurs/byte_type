@@ -1,5 +1,4 @@
-
-import {align} from "../util.ts";
+import { align } from "../util.ts";
 import type { Options } from "./_common.ts";
 
 export interface Unsized<T> {

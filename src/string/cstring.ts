@@ -1,4 +1,4 @@
-import { UnsizedType, type Options } from "../types/mod.ts";
+import { type Options, UnsizedType } from "../types/mod.ts";
 import { TEXT_DECODER, TEXT_ENCODER } from "./_common.ts";
 
 export class CString extends UnsizedType<string> {
