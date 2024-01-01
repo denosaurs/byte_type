@@ -39,7 +39,7 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
   }
 
   // @TODO: Not sure if this is the behavior we want
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): T {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T {
     super.rangeCheck(dt.byteLength, options.byteOffset);
 
     const value = new this.arrayConstructor(
@@ -52,8 +52,7 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
     return value;
   }
 
-  // @TODO: Not sure if this is the behavior we want
-  writeUnaligned(
+  writePacked(
     value: T,
     dt: DataView,
     options: Options = { byteOffset: 0 },

@@ -1,12 +1,12 @@
-import { AlignedType, type Options } from "../types/mod.ts";
+import { UnsizedType, type Options } from "../types/mod.ts";
 import { TEXT_DECODER, TEXT_ENCODER } from "./_common.ts";
 
-export class CString extends AlignedType<string> {
+export class CString extends UnsizedType<string> {
   constructor() {
     super(1);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): string {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): string {
     const view = new Uint8Array(dt.buffer, dt.byteOffset + options.byteOffset);
     let i = 0;
     while (view[i] !== 0x00) {
@@ -20,7 +20,7 @@ export class CString extends AlignedType<string> {
   }
 
   /** `value` should not be a cstring. `\0` get's appended automatically */
-  writeUnaligned(
+  writePacked(
     value: string,
     dt: DataView,
     options: Options = { byteOffset: 0 },

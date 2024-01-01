@@ -6,7 +6,7 @@ export class FixedLength extends SizedType<string> {
     super(length, 1);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): string {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): string {
     super.rangeCheck(dt.byteLength, options.byteOffset);
 
     const view = new Uint8Array(
@@ -20,7 +20,7 @@ export class FixedLength extends SizedType<string> {
   }
 
   /** if `value.length` is bigger than the allowed length it will be truncated */
-  writeUnaligned(
+  writePacked(
     value: string,
     dt: DataView,
     options: Options = { byteOffset: 0 },

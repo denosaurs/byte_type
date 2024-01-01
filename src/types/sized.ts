@@ -1,12 +1,12 @@
-import { type Aligned, AlignedType } from "./aligned.ts";
+import { type Unsized, UnsizedType } from "./unsized.ts";
 import type { Options } from "./_common.ts";
 
-interface Sized<T> extends Aligned<T> {
+interface Sized<T> extends Unsized<T> {
   readonly byteSize: number;
 }
 
-export abstract class SizedType<T> extends AlignedType<T> implements Sized<T> {
-  constructor(readonly byteSize: number, byteAlignment: number) {
+export abstract class SizedType<T> extends UnsizedType<T> implements Sized<T> {
+  constructor(readonly byteSize: number, byteAlignment: number = 1) {
     super(byteAlignment);
   }
 

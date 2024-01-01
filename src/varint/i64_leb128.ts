@@ -1,4 +1,4 @@
-import { AlignedType, type Options } from "../types/mod.ts";
+import { UnsizedType, type Options } from "../types/mod.ts";
 import { CONTINUE_BIT, SEGMENT_BITS } from "./_common.ts";
 
 const SEGMENT_BITS_N = BigInt(SEGMENT_BITS);
@@ -9,12 +9,12 @@ const U32_VIEW = new Uint32Array(AB);
 const I64_VIEW = new BigInt64Array(AB);
 const U64_VIEW = new BigUint64Array(AB);
 
-export class I64Leb128 extends AlignedType<bigint> {
+export class I64Leb128 extends UnsizedType<bigint> {
   constructor() {
     super(1);
   }
 
-  readUnaligned(dt: DataView, options: Options = { byteOffset: 0 }): bigint {
+  readPacked(dt: DataView, options: Options = { byteOffset: 0 }): bigint {
     // Copyright 2023 the Blocktopus authors. All rights reserved. MIT license.
     // Modified to use a `DataView` instead of a `Uint8Array` and to return i64 instead of u64
 
@@ -62,7 +62,7 @@ export class I64Leb128 extends AlignedType<bigint> {
     return I64_VIEW[0];
   }
 
-  writeUnaligned(
+  writePacked(
     value: bigint,
     dt: DataView,
     options: Options = { byteOffset: 0 },

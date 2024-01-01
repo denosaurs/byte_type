@@ -32,7 +32,7 @@ Deno.test({
       }, TypeError);
 
       assertThrows(() => {
-        type.writeUnaligned([1, 2, 3, 4], dt);
+        type.write([1, 2, 3, 4], dt);
       }, TypeError);
     });
   },
