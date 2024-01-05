@@ -1,13 +1,12 @@
-import { AlignedStruct, u32 } from "../mod.ts";
+import { Struct, u32 } from "../mod.ts";
 
 const data = new DataView(new ArrayBuffer(8));
 
 const object = { a: 123, b: 456 };
-const struct = new AlignedStruct({
+const struct = new Struct({
   a: u32,
   b: u32,
 });
-const view = struct.view(data);
 
 Deno.bench("no-op", () => {});
 
@@ -26,15 +25,6 @@ Deno.bench({
   group: "read",
   fn: () => {
     struct.read(data);
-  },
-});
-
-Deno.bench({
-  name: "view",
-  group: "read",
-  fn: () => {
-    view.a;
-    view.b;
   },
 });
 
@@ -65,15 +55,6 @@ Deno.bench({
       a: 0xffff,
       b: 0xffff,
     }, data);
-  },
-});
-
-Deno.bench({
-  name: "view",
-  group: "write",
-  fn: () => {
-    view.a = 0xffff;
-    view.b = 0xffff;
   },
 });
 
