@@ -7,8 +7,7 @@ export class ArrayType<T> extends UnsizedType<T[]> {
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
     if (this.length === 0) return [];
-    const result = [];
-    result.length = this.length;
+    const result = new Array(this.length);
 
     for (let i = 0; i < this.length; i++) {
       result[i] = this.type.readPacked(dt, options);
@@ -20,15 +19,14 @@ export class ArrayType<T> extends UnsizedType<T[]> {
 
   read(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
     if (this.length === 0) return [];
-    const result: unknown[] = [];
-    result.length = this.length;
+    const result = new Array(this.length);
 
     for (let i = 0; i < this.length; i++) {
       result[i] = this.type.read(dt, options);
       // No need for the increment offset. This is handled by the `type.read` function
     }
 
-    return result as T[];
+    return result;
   }
 
   writePacked(
