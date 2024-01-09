@@ -44,7 +44,7 @@ export class Tuple<
   ): void {
     if (value.length !== this.#length) {
       throw new TypeError(
-        `value V doesn't equal expected amount.\nExpected:${this.#length} but got ${value.length}`,
+        `value V has more entries than expected\nExpected:${this.#length} but got ${value.length}`,
       );
     }
     if (value.length === 0) return;
