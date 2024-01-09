@@ -9,7 +9,7 @@ export class ArrayType<T> extends UnsizedType<T[]> {
     if (this.length === 0) return [];
     const result = new Array(this.length);
 
-    for (let i = 0; i < this.length; i++) {
+    for (let i = 0; i < result.length; i++) {
       result[i] = this.type.readPacked(dt, options);
       // No need for the increment offset. This is handled by the `type.readPacked` function
     }
@@ -21,7 +21,7 @@ export class ArrayType<T> extends UnsizedType<T[]> {
     if (this.length === 0) return [];
     const result = new Array(this.length);
 
-    for (let i = 0; i < this.length; i++) {
+    for (let i = 0; i < result.length; i++) {
       result[i] = this.type.read(dt, options);
       // No need for the increment offset. This is handled by the `type.read` function
     }
