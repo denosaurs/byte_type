@@ -55,10 +55,12 @@ export class ArrayType<T> extends UnsizedType<T[]> {
     if (value.length !== this.length) {
       throw new TypeError("T[].length !== ArrayType<T>.length");
     }
-    if (value.length === 0) return;
 
-    for (let i = 0; i < this.length; i++) {
-      this.type.write(value[i], dt, options);
+    if (value.length === 0) return;
+    const { type } = this;
+
+    for (let i = 0; i < value.length; i++) {
+      type.write(value[i], dt, options);
       // No need for the increment offset. This is handled by the `type.write` function
     }
   }
