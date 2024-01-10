@@ -7,11 +7,11 @@ export class ArrayType<T> extends UnsizedType<T[]> {
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
     if (this.length === 0) return [];
-    const result = [];
-    result.length = this.length;
+    const result = new Array(this.length);
+    const { type } = this;
 
-    for (let i = 0; i < this.length; i++) {
-      result[i] = this.type.readPacked(dt, options);
+    for (let i = 0; i < result.length; i++) {
+      result[i] = type.readPacked(dt, options);
       // No need for the increment offset. This is handled by the `type.readPacked` function
     }
 
@@ -20,15 +20,15 @@ export class ArrayType<T> extends UnsizedType<T[]> {
 
   read(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
     if (this.length === 0) return [];
-    const result: unknown[] = [];
-    result.length = this.length;
+    const result = new Array(this.length);
+    const { type } = this;
 
-    for (let i = 0; i < this.length; i++) {
-      result[i] = this.type.read(dt, options);
+    for (let i = 0; i < result.length; i++) {
+      result[i] = type.read(dt, options);
       // No need for the increment offset. This is handled by the `type.read` function
     }
 
-    return result as T[];
+    return result;
   }
 
   writePacked(
@@ -41,8 +41,9 @@ export class ArrayType<T> extends UnsizedType<T[]> {
     }
     if (value.length === 0) return;
 
-    for (let i = 0; i < this.length; i++) {
-      this.type.writePacked(value[i], dt, options);
+    const { type } = this;
+    for (let i = 0; i < value.length; i++) {
+      type.writePacked(value[i], dt, options);
       // No need for the increment offset. This is handled by the `type.writePacked` function
     }
   }
@@ -57,8 +58,9 @@ export class ArrayType<T> extends UnsizedType<T[]> {
     }
     if (value.length === 0) return;
 
-    for (let i = 0; i < this.length; i++) {
-      this.type.write(value[i], dt, options);
+    const { type } = this;
+    for (let i = 0; i < value.length; i++) {
+      type.write(value[i], dt, options);
       // No need for the increment offset. This is handled by the `type.write` function
     }
   }

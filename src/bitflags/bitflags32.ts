@@ -5,11 +5,11 @@ export class BitFlags32<
   I extends Record<string, number>,
   O = OutputRecord<I>,
 > extends SizedType<O> {
-  #record: I;
+  #recordEntries: Array<[string, number]>;
 
   constructor(record: I) {
     super(4, 4);
-    this.#record = record;
+    this.#recordEntries = Object.entries(record);
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): O {
@@ -18,7 +18,7 @@ export class BitFlags32<
     const returnObject: Record<string, boolean> = {};
 
     const byteBag = dt.getUint32(options.byteOffset);
-    for (const { 0: key, 1: flag } of Object.entries(this.#record)) {
+    for (const { 0: key, 1: flag } of this.#recordEntries) {
       returnObject[key] = (byteBag & flag) === flag;
     }
 
@@ -36,7 +36,7 @@ export class BitFlags32<
 
     let flags = 0;
 
-    for (const { 0: key, 1: flagValue } of Object.entries(this.#record)) {
+    for (const { 0: key, 1: flagValue } of this.#recordEntries) {
       if (value[key as keyof O]) {
         flags |= flagValue;
       }
