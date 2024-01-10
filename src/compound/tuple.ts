@@ -6,31 +6,32 @@ export class Tuple<
   V extends [...unknown[]] = { [I in keyof T]: InnerType<T[I]> },
 > extends UnsizedType<V> {
   #tupleTypes: T;
-
+  #length: number;
   constructor(types: T) {
     super(getBiggestAlignment(types));
     this.#tupleTypes = types;
+    this.#length = types.length;
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    if (this.#tupleTypes.length === 0) return [] as unknown as V;
+    if (this.#length === 0) return [] as unknown as V;
+    const result: unknown[] = new Array(this.#length);
 
-    const result: unknown[] = [];
-    result.length = this.#tupleTypes.length;
-
+    const tupleTypes = this.#tupleTypes;
     for (let i = 0; i < result.length; i++) {
-      result[i] = this.#tupleTypes[i].readPacked(dt, options);
+      result[i] = tupleTypes[i].readPacked(dt, options);
     }
 
     return result as V;
   }
 
   read(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    const result: unknown[] = [];
-    result.length = this.#tupleTypes.length;
+    if (this.#length === 0) return [] as unknown as V;
+    const result: unknown[] = new Array(this.#length);
 
+    const tupleTypes = this.#tupleTypes;
     for (let i = 0; i < result.length; i++) {
-      result[i] = this.#tupleTypes[i].read(dt, options);
+      result[i] = tupleTypes[i].read(dt, options);
     }
 
     return result as V;
@@ -41,16 +42,30 @@ export class Tuple<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
+    if (value.length !== this.#length) {
+      throw new TypeError(
+        `value V has more entries than expected\nExpected:${this.#length} but got ${value.length}`,
+      );
+    }
     if (value.length === 0) return;
 
-    for (let i = 0; i < this.#tupleTypes.length; i++) {
-      this.#tupleTypes[i].writePacked(value[i], dt, options);
+    const tupleTypes = this.#tupleTypes;
+    for (let i = 0; i < value.length; i++) {
+      tupleTypes[i].writePacked(value[i], dt, options);
     }
   }
 
   write(value: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
-    for (let i = 0; i < this.#tupleTypes.length; i++) {
-      this.#tupleTypes[i].write(value[i], dt, options);
+    if (value.length !== this.#length) {
+      throw new TypeError(
+        `value V has more entries than expected\nExpected:${this.#length} but got ${value.length}`,
+      );
+    }
+    if (value.length === 0) return;
+
+    const tupleTypes = this.#tupleTypes;
+    for (let i = 0; i < value.length; i++) {
+      tupleTypes[i].write(value[i], dt, options);
     }
   }
 }
