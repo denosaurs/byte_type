@@ -38,7 +38,6 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
     );
   }
 
-  // @TODO: Not sure if this is the behavior we want
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T {
     super.rangeCheck(dt.byteLength, options.byteOffset);
 
