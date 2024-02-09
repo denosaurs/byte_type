@@ -11,14 +11,23 @@ native js performance and ergonomic interfaces!
 ## Usage
 
 ```ts
-import { PackedStruct, u32, u8 } from "https://deno.land/x/byte_type/mod.ts";
+import { Struct, u32, u8 } from "https://deno.land/x/byte_type/mod.ts";
 
-const o = new PackedStruct({ "b": u8, "a": u32 }).view(
-  new DataView(new ArrayBuffer(5)),
-  0,
-);
+const buffer = new ArrayBuffer(8);
+const dt = new DataView(buffer);
 
-console.log(o.valueOf());
+const struct = new Struct({ "b": u8, "a": u32 });
+
+struct.write({ b: 8, a: 32 }, dt);
+console.log(struct.read(dt));
+console.log(buffer);
+
+// Output:
+// { b: 8, a: 32 }
+// ArrayBuffer {
+//   [Uint8Contents]: <08 00 00 00 20 00 00 00>,
+//   byteLength: 8
+// }
 ```
 
 ## Maintainers
@@ -33,4 +42,4 @@ Pull request, issues and feedback are very welcome. Code style is formatted with
 
 ### Licence
 
-Copyright 2021-2023, the denosaurs team. All rights reserved. MIT license.
+Copyright 2021-2024, the denosaurs team. All rights reserved. MIT license.
