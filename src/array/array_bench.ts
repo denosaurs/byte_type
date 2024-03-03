@@ -7,6 +7,7 @@ const AB = new Uint8Array(SIZE).map((_, i) => i).buffer;
 const DT = new DataView(AB);
 
 const atn = new ArrayType(u8, SIZE);
+// @ts-ignore:
 const ato = new OArrayType(u8, SIZE);
 
 Deno.bench("nop", () => {});

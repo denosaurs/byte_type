@@ -3,6 +3,7 @@ import { Tuple, u32, u8 } from "../mod.ts";
 
 const record = [u32, u8];
 
+// @ts-ignore:
 const oTuple = new OTuple(record);
 const nTuple = new Tuple(record);
 
