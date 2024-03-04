@@ -10,7 +10,7 @@ export interface Unsized<T> {
 
 /**
  * `UnsizedType<T>` is one of the two base classes for implementing a codec.
- * 
+ *
  * This is the most common used class for when you do not know the size of your struct.
  */
 export abstract class UnsizedType<T> implements Unsized<T> {
@@ -19,7 +19,7 @@ export abstract class UnsizedType<T> implements Unsized<T> {
   /**
    * Read a value from the provided buffer while consuming as little bytes as possible.
    * This method is used for data over the network or when reading memory that may not be aligned
-   * 
+   *
    * ### Implementors be aware!
    * - This method is the base functionality of `Unsized<T>.read()` if that method is not overridden.
    * - This method does not automatically offset or align the `Options.byteOffset`. You need to do this yourself.
@@ -29,7 +29,7 @@ export abstract class UnsizedType<T> implements Unsized<T> {
   /**
    * write a value into the provided buffer while consuming as little bytes as possible.
    * This method is used for data over the network or when writing memory that may not be aligned
-   * 
+   *
    * ### Implementors be aware!
    * - This method is the base functionality of `Unsized<T>.write()` if it's not implemented
    * - This method does not automatically offset or align the `Options.byteOffset`. You need to do this yourself
@@ -38,7 +38,7 @@ export abstract class UnsizedType<T> implements Unsized<T> {
 
   /**
    * Read a aligned value from the provided buffer and optional byte offset
-   * 
+   *
    * ### Implementors be aware
    * - This is a function that is automatically implemented but may not be correct all the time.
    * - This function only works in a vacuum. This means that it will only work on single types.

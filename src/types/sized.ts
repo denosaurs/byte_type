@@ -7,7 +7,7 @@ interface Sized<T> extends Unsized<T> {
 
 /**
  * `SizedType<T>` is one of the two base classes for implementing a codec.
- * 
+ *
  * It is recommended to use this class if you know the size of your type ahead of time.
  * In future released this may be used for certain optimizations
  */
