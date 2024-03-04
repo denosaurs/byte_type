@@ -1,8 +1,8 @@
-import { UnsizedType, u8 } from "../mod.ts";
+import { u8, UnsizedType } from "../mod.ts";
 import { Options } from "../types/_common.ts";
 import { TEXT_DECODER, TEXT_ENCODER } from "./_common.ts";
 
-export class PrefixedLengthString extends UnsizedType<string> {
+export class PrefixedString extends UnsizedType<string> {
   #prefixCodec: UnsizedType<number>;
 
   constructor(prefixCodec: UnsizedType<number> = u8) {
@@ -10,20 +10,28 @@ export class PrefixedLengthString extends UnsizedType<string> {
     this.#prefixCodec = prefixCodec;
   }
 
-  writePacked(value: string, dt: DataView, options: Options = { byteOffset: 0 }): void {
+  writePacked(
+    value: string,
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
     this.#prefixCodec.writePacked(value.length, dt, options);
 
     const view = new Uint8Array(
       dt.buffer,
       dt.byteOffset + options.byteOffset,
-      value.length
+      value.length,
     );
 
     TEXT_ENCODER.encodeInto(value, view);
     super.incrementOffset(options, value.length);
   }
 
-  write(value: string, dt: DataView, options: Options = { byteOffset: 0 }): void {
+  write(
+    value: string,
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
     this.#prefixCodec.write(value.length, dt, options);
     super.alignOffset(options);
 
