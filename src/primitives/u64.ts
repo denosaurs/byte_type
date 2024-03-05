@@ -2,7 +2,7 @@ import { type Options, SizedType } from "../types/mod.ts";
 import { isLittleEndian } from "../util.ts";
 
 export class U64 extends SizedType<bigint> {
-  constructor(readonly littleEndian = isLittleEndian) {
+  constructor(readonly littleEndian: boolean = isLittleEndian) {
     super(8, 8);
   }
 
@@ -24,6 +24,6 @@ export class U64 extends SizedType<bigint> {
   }
 }
 
-export const u64le = new U64(true);
-export const u64be = new U64(false);
-export const u64 = new U64();
+export const u64le: U64 = new U64(true);
+export const u64be: U64 = new U64(false);
+export const u64: U64 = new U64();

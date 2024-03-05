@@ -2,7 +2,7 @@ import { InnerType, Strings, Struct, u32, u8 } from "../mod.ts";
 import {
   decode as msgpackRead,
   encode as msgpackWrite,
-} from "https://deno.land/std@0.208.0/msgpack/mod.ts";
+} from "jsr:@std/msgpack@0.218";
 
 const descriptor = {
   handIndex: u8,

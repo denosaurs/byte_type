@@ -35,4 +35,4 @@ export class CString extends UnsizedType<string> {
   }
 }
 
-export const cstring = new CString();
+export const cstring: CString = new CString();
