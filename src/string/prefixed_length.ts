@@ -1,5 +1,5 @@
 import { u8, UnsizedType } from "../mod.ts";
-import { Options } from "../types/_common.ts";
+import type { Options } from "../types/mod.ts";
 import { TEXT_DECODER, TEXT_ENCODER } from "./_common.ts";
 
 export class PrefixedString extends UnsizedType<string> {
