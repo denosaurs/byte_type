@@ -45,5 +45,5 @@ export class U4 extends SizedType<U4Number> {
   }
 }
 
-export const u2 = new U2();
-export const u4 = new U4();
+export const u2: U2 = new U2();
+export const u4: U4 = new U4();

@@ -23,4 +23,4 @@ export class I8 extends SizedType<number> {
   }
 }
 
-export const i8 = new I8();
+export const i8: I8 = new I8();

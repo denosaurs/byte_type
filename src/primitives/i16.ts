@@ -2,7 +2,7 @@ import { type Options, SizedType } from "../types/mod.ts";
 import { isLittleEndian } from "../util.ts";
 
 export class I16 extends SizedType<number> {
-  constructor(readonly littleEndian = isLittleEndian) {
+  constructor(readonly littleEndian: boolean = isLittleEndian) {
     super(2, 2);
   }
 
@@ -24,6 +24,6 @@ export class I16 extends SizedType<number> {
   }
 }
 
-export const i16le = new I16(true);
-export const i16be = new I16(false);
-export const i16 = new I16();
+export const i16le: I16 = new I16(true);
+export const i16be: I16 = new I16(false);
+export const i16: I16 = new I16();

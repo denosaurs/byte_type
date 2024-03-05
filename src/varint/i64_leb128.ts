@@ -87,4 +87,4 @@ export class I64Leb128 extends UnsizedType<bigint> {
   }
 }
 
-export const i64leb128 = new I64Leb128();
+export const i64leb128: I64Leb128 = new I64Leb128();
