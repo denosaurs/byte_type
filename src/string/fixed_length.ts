@@ -1,7 +1,7 @@
 import { type Options, SizedType } from "../types/mod.ts";
 import { TEXT_DECODER, TEXT_ENCODER } from "./_common.ts";
 
-export class FixedLength extends SizedType<string> {
+export class FixedLengthString extends SizedType<string> {
   constructor(length: number) {
     super(length, 1);
   }
@@ -38,5 +38,5 @@ export class FixedLength extends SizedType<string> {
   }
 }
 
-export const asciiChar = new FixedLength(1);
-export const utf8Char = new FixedLength(4);
+export const asciiChar = new FixedLengthString(1);
+export const utf8Char = new FixedLengthString(4);
