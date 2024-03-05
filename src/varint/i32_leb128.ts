@@ -43,4 +43,4 @@ export class I32Leb128 extends UnsizedType<number> {
   }
 }
 
-export const i32leb128 = new I32Leb128();
+export const i32leb128: I32Leb128 = new I32Leb128();

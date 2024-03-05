@@ -1,5 +1,6 @@
 {
   "name": "@denosaurs/byte-type",
   "version": "0.3.1",
-  "exports": "./mod.ts"
+  "exports": "./mod.ts",
+  "lock": false
 }

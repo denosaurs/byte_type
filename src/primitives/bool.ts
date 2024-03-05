@@ -25,4 +25,4 @@ export class Bool extends SizedType<boolean> {
   }
 }
 
-export const bool = new Bool();
+export const bool: Bool = new Bool();

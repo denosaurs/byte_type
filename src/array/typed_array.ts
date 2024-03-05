@@ -68,9 +68,13 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
   }
 }
 
+export interface TypedArrayTypeConstructor<T extends TypedArrays> {
+  new (length: number): TypedArray<T>;
+}
+
 function createTypedArrayType<E extends TypedConstructors<TypedArrays>>(
   constructor: E,
-) {
+): TypedArrayTypeConstructor<ReturnType<E["from"]>> {
   return class extends TypedArray<ReturnType<E["from"]>> {
     constructor(length: number) {
       super(constructor, length);
@@ -78,14 +82,26 @@ function createTypedArrayType<E extends TypedConstructors<TypedArrays>>(
   };
 }
 
-export const Uint8ArrayType = createTypedArrayType(Uint8Array);
-export const Uint8ClampedArrayType = createTypedArrayType(Uint8ClampedArray);
-export const Int8ArrayType = createTypedArrayType(Int8Array);
-export const Uint16ArrayType = createTypedArrayType(Uint16Array);
-export const Int16ArrayType = createTypedArrayType(Int16Array);
-export const Uint32ArrayType = createTypedArrayType(Uint32Array);
-export const Int32ArrayType = createTypedArrayType(Int32Array);
-export const Float32ArrayType = createTypedArrayType(Float32Array);
-export const Float64ArrayType = createTypedArrayType(Float64Array);
-export const BigUint64ArrayType = createTypedArrayType(BigUint64Array);
-export const BigInt64ArrayType = createTypedArrayType(BigInt64Array);
+export const Uint8ArrayType: TypedArrayTypeConstructor<Uint8Array> =
+  createTypedArrayType(Uint8Array);
+export const Uint8ClampedArrayType: TypedArrayTypeConstructor<
+  Uint8ClampedArray
+> = createTypedArrayType(Uint8ClampedArray);
+export const Int8ArrayType: TypedArrayTypeConstructor<Int8Array> =
+  createTypedArrayType(Int8Array);
+export const Uint16ArrayType: TypedArrayTypeConstructor<Uint16Array> =
+  createTypedArrayType(Uint16Array);
+export const Int16ArrayType: TypedArrayTypeConstructor<Int16Array> =
+  createTypedArrayType(Int16Array);
+export const Uint32ArrayType: TypedArrayTypeConstructor<Uint32Array> =
+  createTypedArrayType(Uint32Array);
+export const Int32ArrayType: TypedArrayTypeConstructor<Int32Array> =
+  createTypedArrayType(Int32Array);
+export const Float32ArrayType: TypedArrayTypeConstructor<Float32Array> =
+  createTypedArrayType(Float32Array);
+export const Float64ArrayType: TypedArrayTypeConstructor<Float64Array> =
+  createTypedArrayType(Float64Array);
+export const BigUint64ArrayType: TypedArrayTypeConstructor<BigUint64Array> =
+  createTypedArrayType(BigUint64Array);
+export const BigInt64ArrayType: TypedArrayTypeConstructor<BigInt64Array> =
+  createTypedArrayType(BigInt64Array);

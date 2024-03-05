@@ -38,5 +38,5 @@ export class FixedLengthString extends SizedType<string> {
   }
 }
 
-export const asciiChar = new FixedLengthString(1);
-export const utf8Char = new FixedLengthString(4);
+export const asciiChar: FixedLengthString = new FixedLengthString(1);
+export const utf8Char: FixedLengthString = new FixedLengthString(4);
