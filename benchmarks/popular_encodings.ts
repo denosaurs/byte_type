@@ -8,7 +8,7 @@ const descriptor = {
   handIndex: u8,
   fieldIndex: u8,
   card: new Struct({
-    name: new Strings.FixedLength(11),
+    name: new Strings.FixedLengthString(11),
     hp: u8,
     damage: u8,
     shield: u32,
@@ -68,7 +68,7 @@ Deno.bench({
   name: "Struct (Write)",
   group: "write",
   fn: () => {
-    codec.writeUnaligned(data, DATA_VIEW);
+    codec.writePacked(data, DATA_VIEW);
   },
 });
 
@@ -76,7 +76,7 @@ Deno.bench({
   name: "Struct (Read)",
   group: "read",
   fn: () => {
-    codec.readUnaligned(DATA_VIEW);
+    codec.readPacked(DATA_VIEW);
   },
 });
 
@@ -84,8 +84,8 @@ Deno.bench({
   name: "Struct (Roundtrip)",
   group: "roundtrip",
   fn: () => {
-    codec.writeUnaligned(data, DATA_VIEW);
-    codec.readUnaligned(DATA_VIEW);
+    codec.writePacked(data, DATA_VIEW);
+    codec.readPacked(DATA_VIEW);
   },
 });
 
