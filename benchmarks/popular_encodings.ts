@@ -1,4 +1,4 @@
-import { InnerType, Strings, Struct, u32, u8 } from "../mod.ts";
+import { type InnerType, Strings, Struct, u32, u8 } from "../mod.ts";
 import {
   decode as msgpackRead,
   encode as msgpackWrite,
