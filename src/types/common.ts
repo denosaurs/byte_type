@@ -1,4 +1,4 @@
-import { Unsized } from "./unsized.ts";
+import type { Unsized } from "./unsized.ts";
 
 export interface Options {
   byteOffset: number;
