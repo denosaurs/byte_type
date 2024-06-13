@@ -11,6 +11,7 @@ type FindDiscriminant<V, D extends number | string> = (variant: V) => D;
 
 type Keys<T> = Exclude<keyof T, symbol>;
 
+/** Union for when the inner type's don't write their own discriminant */
 export class TaggedUnion<
   T extends Record<string | number, UnsizedType<unknown>>,
   V extends ValueOf<{ [K in keyof T]: InnerType<T[K]> }> = ValueOf<
