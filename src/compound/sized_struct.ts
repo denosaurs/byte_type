@@ -4,7 +4,7 @@ import { calculateTotalSize, getBiggestAlignment } from "../util.ts";
 type ReadFn<R> = (dt: DataView, options: Options) => R;
 type WriteFn<V> = (dt: DataView, options: Options, value: V) => void;
 
-const createProp = (key: string, method: string) =>
+const createRead = (key: string, method: string) =>
   `"${key}": ${key}.${method}(dt, options)`;
 
 const createWrite = (key: string, method: string) =>
@@ -26,7 +26,7 @@ function createFunc<V>(
   const seperator = !isWriter ? "," : "";
   const keys = Object.keys(input);
 
-  const mapFn = isWriter ? createWrite : createProp;
+  const mapFn = isWriter ? createWrite : createRead;
 
   const generatedCodec = keys.map((k) => mapFn(k, method)).join(seperator);
   const args = ["dt", "options"];
