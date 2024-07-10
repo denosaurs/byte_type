@@ -1,9 +1,15 @@
 import { Struct, u32 } from "../mod.ts";
+import { SizedStruct } from "../src/compound/sized_struct.ts";
 
 const data = new DataView(new ArrayBuffer(8));
 
 const object = { a: 123, b: 456 };
 const struct = new Struct({
+  a: u32,
+  b: u32,
+});
+
+const sizedStruct = new SizedStruct({
   a: u32,
   b: u32,
 });
@@ -25,6 +31,14 @@ Deno.bench({
   group: "read",
   fn: () => {
     struct.read(data);
+  },
+});
+
+Deno.bench({
+  name: "struct Sized",
+  group: "read",
+  fn: () => {
+    sizedStruct.read(data);
   },
 });
 
@@ -52,6 +66,17 @@ Deno.bench({
   group: "write",
   fn: () => {
     struct.write({
+      a: 0xffff,
+      b: 0xffff,
+    }, data);
+  },
+});
+
+Deno.bench({
+  name: "struct Sized",
+  group: "write",
+  fn: () => {
+    sizedStruct.write({
       a: 0xffff,
       b: 0xffff,
     }, data);

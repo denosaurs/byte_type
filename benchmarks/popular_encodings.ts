@@ -3,19 +3,32 @@ import {
   decode as msgpackRead,
   encode as msgpackWrite,
 } from "jsr:@std/msgpack@0.218";
+import { SizedStruct } from "../src/compound/sized_struct.ts";
 
-const descriptor = {
+const innerDescriptor = {
+  name: new Strings.FixedLengthString(11),
+  hp: u8,
+  damage: u8,
+  shield: u32,
+};
+
+const baseDescriptor = {
   handIndex: u8,
   fieldIndex: u8,
-  card: new Struct({
-    name: new Strings.FixedLengthString(11),
-    hp: u8,
-    damage: u8,
-    shield: u32,
-  }),
+};
+
+const descriptor = {
+  ...baseDescriptor,
+  card: new Struct(innerDescriptor),
+};
+
+const sizedDescriptor = {
+  ...baseDescriptor,
+  card: new SizedStruct(innerDescriptor),
 };
 
 const codec = new Struct(descriptor);
+const sizedCodec = new SizedStruct(sizedDescriptor);
 
 const data: InnerType<typeof codec> = {
   handIndex: 255,
@@ -86,6 +99,31 @@ Deno.bench({
   fn: () => {
     codec.writePacked(data, DATA_VIEW);
     codec.readPacked(DATA_VIEW);
+  },
+});
+
+Deno.bench({
+  name: "SizedStruct (Write)",
+  group: "write",
+  fn: () => {
+    sizedCodec.writePacked(data, DATA_VIEW);
+  },
+});
+
+Deno.bench({
+  name: "SizedStruct (Read)",
+  group: "read",
+  fn: () => {
+    sizedCodec.readPacked(DATA_VIEW);
+  },
+});
+
+Deno.bench({
+  name: "SizedStruct (Roundtrip)",
+  group: "roundtrip",
+  fn: () => {
+    sizedCodec.writePacked(data, DATA_VIEW);
+    sizedCodec.readPacked(DATA_VIEW);
   },
 });
 
