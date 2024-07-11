@@ -33,7 +33,7 @@ console.log(buffer);
 ## Maintainers
 
 - Elias Sjögreen ([@eliassjogreen](https://github.com/eliassjogreen))
-- Dean ([@load1n9](https://github.com/load1n9))
+- Dean Srebnik ([@load1n9](https://github.com/load1n9))
 - Skye ([@MierenManz](https://github.com/mierenmanz))
 
 ### Contribution
