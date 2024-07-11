@@ -16,7 +16,6 @@ export class Union<
   T extends Record<number, UnsizedType<unknown>>,
   V extends ValueOf<{ [K in keyof T]: InnerType<T[K]> }>,
 > extends UnsizedType<V> {
-
   #record: T;
   #variantFinder: FindDiscriminant<V, Keys<T>>;
   #discriminant = u8;
@@ -31,30 +30,38 @@ export class Union<
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    const discriminant = this.#discriminant.readPacked(dt, { byteOffset: options.byteOffset });
+    const discriminant = this.#discriminant.readPacked(dt, {
+      byteOffset: options.byteOffset,
+    });
     const codec = this.#record[discriminant];
     if (!codec) throw new TypeError("Unknown discriminant");
     return codec.readPacked(dt, options) as V;
   }
 
   read(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    const discriminant = this.#discriminant.read(dt, { byteOffset: options.byteOffset });
+    const discriminant = this.#discriminant.read(dt, {
+      byteOffset: options.byteOffset,
+    });
     const codec = this.#record[discriminant];
     if (!codec) throw new TypeError("Unknown discriminant");
     return codec.readPacked(dt, options) as V;
   }
 
-  writePacked(variant: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
+  writePacked(
+    variant: V,
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
     const discriminant = this.#variantFinder(variant);
     const codec = this.#record[discriminant];
     if (!codec) throw new TypeError("Unknown discriminant");
-    codec.writePacked(variant, dt, options) as V;
+    codec.writePacked(variant, dt, options);
   }
 
   write(variant: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
     const discriminant = this.#variantFinder(variant);
     const codec = this.#record[discriminant];
     if (!codec) throw new TypeError("Unknown discriminant");
-    codec.write(variant, dt, options) as V;
+    codec.write(variant, dt, options);
   }
 }
