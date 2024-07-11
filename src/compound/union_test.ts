@@ -19,7 +19,7 @@ Deno.test({
       dt.setUint8(2, 22);
       dt.setUint8(4, 33);
       const result = type.read(dt);
-      assertEquals(result, 33);
+      assertEquals(result, 1);
     });
 
     await t.step("Read Packed", () => {
@@ -28,23 +28,23 @@ Deno.test({
       dt.setUint8(2, 22);
       dt.setUint8(4, 33);
       const result = type.readPacked(dt);
-      assertEquals(result, 11);
+      assertEquals(result, 1);
     });
 
     dt.setBigUint64(0, 0n);
 
     await t.step("Write", () => {
       type.write(32, dt);
-      assertEquals(new Uint32Array(ab), Uint32Array.of(0, 32));
+      assertEquals(new Uint32Array(ab), Uint32Array.of(32, 0));
     });
 
     dt.setBigUint64(0, 0n);
 
     await t.step("Write Packed", () => {
-      type.write(32, dt);
+      type.writePacked(32, dt);
       assertEquals(
         new Uint8Array(ab).subarray(0, 5),
-        Uint8Array.of(0, 0, 0, 0, 32),
+        Uint8Array.of(32, 0, 0, 0, 0),
       );
     });
 
