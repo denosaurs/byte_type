@@ -41,10 +41,10 @@ Deno.test({
     dt.setBigUint64(0, 0n);
 
     await t.step("Write Packed", () => {
-      type.write(32, dt);
+      type.writePacked(32, dt);
       assertEquals(
         new Uint8Array(ab).subarray(0, 5),
-        Uint8Array.of(0, 0, 0, 0, 32),
+        Uint8Array.of(0, 32, 0, 0, 0),
       );
     });
 
