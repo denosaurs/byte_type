@@ -22,6 +22,8 @@ export const getBiggestAlignment = (
   Object.values(input)
     .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
 
-export const calculateTotalSize = (input: ArrayOrRecord<SizedType<unknown>>) =>
+export const calculateTotalSize = (
+  input: ArrayOrRecord<SizedType<unknown>>,
+): number =>
   Object.values(input)
     .reduce((acc, x) => acc + x.byteSize, 0);
