@@ -1,13 +1,13 @@
-import { TaggedUnion } from "./tagged_union.ts";
 import { u32le, u8 } from "../mod.ts";
 import { assertEquals, assertThrows } from "../../test_deps.ts";
+import { Union } from "./union.ts";
 
 Deno.test({
-  name: "Tagged Union",
+  name: "Union",
   fn: async (t) => {
     const ab = new ArrayBuffer(8);
     const dt = new DataView(ab);
-    const type = new TaggedUnion({
+    const type = new Union({
       0: u32le,
       1: u8,
       2: u8,
@@ -19,7 +19,7 @@ Deno.test({
       dt.setUint8(2, 22);
       dt.setUint8(4, 33);
       const result = type.read(dt);
-      assertEquals(result, 33);
+      assertEquals(result, 1);
     });
 
     await t.step("Read Packed", () => {
@@ -28,14 +28,14 @@ Deno.test({
       dt.setUint8(2, 22);
       dt.setUint8(4, 33);
       const result = type.readPacked(dt);
-      assertEquals(result, 11);
+      assertEquals(result, 1);
     });
 
     dt.setBigUint64(0, 0n);
 
     await t.step("Write", () => {
       type.write(32, dt);
-      assertEquals(new Uint32Array(ab), Uint32Array.of(0, 32));
+      assertEquals(new Uint32Array(ab), Uint32Array.of(32, 0));
     });
 
     dt.setBigUint64(0, 0n);
@@ -44,7 +44,7 @@ Deno.test({
       type.writePacked(32, dt);
       assertEquals(
         new Uint8Array(ab).subarray(0, 5),
-        Uint8Array.of(0, 32, 0, 0, 0),
+        Uint8Array.of(32, 0, 0, 0, 0),
       );
     });
 
