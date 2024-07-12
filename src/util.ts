@@ -1,4 +1,4 @@
-import type { UnsizedType } from "./mod.ts";
+import type { SizedType, UnsizedType } from "./mod.ts";
 
 /**
  * The endianess of your machine, true if little endian and false if big endian.
@@ -21,3 +21,9 @@ export const getBiggestAlignment = (
 ): number =>
   Object.values(input)
     .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
+
+export const calculateTotalSize = (
+  input: ArrayOrRecord<SizedType<unknown>>,
+): number =>
+  Object.values(input)
+    .reduce((acc, x) => acc + x.byteSize, 0);
