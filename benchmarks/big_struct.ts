@@ -42,17 +42,6 @@ const data: InnerType<typeof codec> = {
   },
 };
 
-const object: InnerType<typeof codec> = {
-  handIndex: 0,
-  fieldIndex: 0,
-  card: {
-    name: "00000000000",
-    hp: 0,
-    damage: 0,
-    shield: 0,
-  },
-};
-
 const ARRAY_BUFFER = new ArrayBuffer(20);
 const DATA_VIEW = new DataView(ARRAY_BUFFER);
 const BIN_VIEW = new Uint8Array(ARRAY_BUFFER, 2, 11);
@@ -60,20 +49,6 @@ const DECODER = new TextDecoder();
 const ENCODER = new TextEncoder();
 
 Deno.bench("no-op", () => {});
-
-Deno.bench({
-  baseline: true,
-  name: "object (Read)",
-  group: "read",
-  fn: () => {
-    object.handIndex;
-    object.fieldIndex;
-    object.card.name;
-    object.card.hp;
-    object.card.damage;
-    object.card.shield;
-  },
-});
 
 Deno.bench({
   name: "Struct (Read)",
@@ -94,27 +69,18 @@ Deno.bench({
 Deno.bench({
   name: "Primitives (Read)",
   group: "read",
-  fn: () => {
-    DATA_VIEW.getUint8(0);
-    DATA_VIEW.getUint8(1);
-    DECODER.decode(BIN_VIEW);
-    DATA_VIEW.getUint8(13);
-    DATA_VIEW.getUint8(14);
-    DATA_VIEW.getUint32(16);
-  },
-});
-
-Deno.bench({
   baseline: true,
-  name: "object (Write)",
-  group: "write",
   fn: () => {
-    object.handIndex = 255;
-    object.fieldIndex = 255;
-    object.card.name = "InvalidCards";
-    object.card.hp = 255;
-    object.card.damage = 255;
-    object.card.shield = 255;
+    ({
+      handIndex: DATA_VIEW.getUint8(0),
+      fieldIndex: DATA_VIEW.getUint8(1),
+      card: {
+        name: DECODER.decode(BIN_VIEW),
+        hp: DATA_VIEW.getUint8(13),
+        damage: DATA_VIEW.getUint8(14),
+        shield: DATA_VIEW.getUint8(16),
+      },
+    });
   },
 });
 
@@ -138,11 +104,11 @@ Deno.bench({
   name: "Primitives (Write)",
   group: "write",
   fn: () => {
-    DATA_VIEW.setUint8(0, 255);
-    DATA_VIEW.setUint8(1, 255);
-    ENCODER.encodeInto("InvalidCards", BIN_VIEW);
-    DATA_VIEW.setUint8(13, 255);
-    DATA_VIEW.setUint8(14, 255);
-    DATA_VIEW.setUint32(16, 255);
+    DATA_VIEW.setUint8(0, data.handIndex);
+    DATA_VIEW.setUint8(1, data.fieldIndex);
+    ENCODER.encodeInto(data.card.name, BIN_VIEW);
+    DATA_VIEW.setUint8(13, data.card.hp);
+    DATA_VIEW.setUint8(14, data.card.damage);
+    DATA_VIEW.setUint32(16, data.card.shield);
   },
 });
