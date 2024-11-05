@@ -7,8 +7,6 @@ export class FixedLengthString extends SizedType<string> {
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): string {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
-
     const view = new Uint8Array(
       dt.buffer,
       dt.byteOffset + options.byteOffset,
@@ -25,8 +23,6 @@ export class FixedLengthString extends SizedType<string> {
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
-
     const view = new Uint8Array(
       dt.buffer,
       dt.byteOffset + options.byteOffset,

@@ -7,7 +7,6 @@ export class F32 extends SizedType<number> {
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): number {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
     const value = dt.getFloat32(options.byteOffset, this.littleEndian);
     super.incrementOffset(options);
     return value;
@@ -18,7 +17,6 @@ export class F32 extends SizedType<number> {
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
     dt.setFloat32(options.byteOffset, value, this.littleEndian);
     super.incrementOffset(options);
   }

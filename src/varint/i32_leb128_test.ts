@@ -78,3 +78,48 @@ Deno.test("i32leb128", async ({ step }) => {
     });
   });
 });
+
+Deno.test("i32leb128", async ({ step }) => {
+  await step("read", async ({ step }) => {
+    await step("positive", () => {
+      let data = Uint8Array.of(127);
+      let result = i32leb128.readPacked2(new DataView(data.buffer));
+      assertEquals(result, 127);
+
+      data = Uint8Array.of(128, 1);
+      result = i32leb128.readPacked2(new DataView(data.buffer));
+      assertEquals(result, 128);
+
+      data = Uint8Array.of(221, 199, 1);
+      result = i32leb128.readPacked2(new DataView(data.buffer));
+      assertEquals(result, 25565);
+
+      data = Uint8Array.of(255, 255, 255, 255, 7);
+      result = i32leb128.readPacked2(new DataView(data.buffer));
+      assertEquals(result, 2147483647);
+    });
+
+    await step("negative", () => {
+      let data = Uint8Array.of(255, 255, 255, 255, 15);
+      let result = i32leb128.readPacked2(new DataView(data.buffer));
+      assertEquals(result, -1);
+
+      data = Uint8Array.of(128, 128, 128, 128, 8);
+      result = i32leb128.readPacked2(new DataView(data.buffer));
+      assertEquals(result, -2147483648);
+    });
+
+    await step("bad", () => {
+      const data = Uint8Array.of(255, 255, 255, 255, 255, 15);
+      assertThrows(() => i32leb128.readPacked2(new DataView(data.buffer)));
+    });
+
+    await step("i32 max", () => {
+      const data = Uint8Array.of(255, 255, 255, 255, 7);
+      assertEquals(
+        i32leb128.readPacked2(new DataView(data.buffer)),
+        2147483647,
+      );
+    });
+  });
+});

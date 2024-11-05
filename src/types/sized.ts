@@ -20,11 +20,4 @@ export abstract class SizedType<T> extends UnsizedType<T> implements Sized<T> {
   protected override incrementOffset(options: Options): void {
     super.incrementOffset(options, this.byteSize);
   }
-
-  /** Allows you to check upfront if you will go out of bound */
-  protected rangeCheck(byteLength: number, offset: number): void {
-    if (this.byteSize > (byteLength - offset)) {
-      throw new RangeError("Out of bound");
-    }
-  }
 }
