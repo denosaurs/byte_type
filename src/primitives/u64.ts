@@ -7,7 +7,6 @@ export class U64 extends SizedType<bigint> {
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): bigint {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
     const value = dt.getBigUint64(options.byteOffset, this.littleEndian);
     super.incrementOffset(options);
     return value;
@@ -18,7 +17,6 @@ export class U64 extends SizedType<bigint> {
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
     dt.setBigUint64(options.byteOffset, value, this.littleEndian);
     super.incrementOffset(options);
   }

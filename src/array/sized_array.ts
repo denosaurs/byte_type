@@ -13,7 +13,7 @@ export class SizedArrayType<T> extends SizedType<T[]> implements ArrayType<T> {
     return this.#inner.readPacked(dt, options);
   }
 
-  read(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
+  override read(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
     return this.#inner.read(dt, options);
   }
 
@@ -25,7 +25,11 @@ export class SizedArrayType<T> extends SizedType<T[]> implements ArrayType<T> {
     this.#inner.writePacked(value, dt, options);
   }
 
-  write(value: T[], dt: DataView, options: Options = { byteOffset: 0 }): void {
+  override write(
+    value: T[],
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
     this.#inner.write(value, dt, options);
   }
 }

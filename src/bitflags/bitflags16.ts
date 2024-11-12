@@ -13,8 +13,6 @@ export class BitFlags16<
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): O {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
-
     const returnObject: Record<string, boolean> = {};
 
     const byteBag = dt.getUint16(options.byteOffset);
@@ -32,8 +30,6 @@ export class BitFlags16<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
-
     let flags = 0;
 
     for (const { 0: key, 1: flagValue } of this.#recordEntries) {

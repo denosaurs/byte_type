@@ -25,7 +25,7 @@ export class Tuple<
     return result as V;
   }
 
-  read(dt: DataView, options: Options = { byteOffset: 0 }): V {
+  override read(dt: DataView, options: Options = { byteOffset: 0 }): V {
     if (this.#length === 0) return [] as unknown as V;
     const result: unknown[] = new Array(this.#length);
 
@@ -55,7 +55,11 @@ export class Tuple<
     }
   }
 
-  write(value: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
+  override write(
+    value: V,
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
     if (value.length !== this.#length) {
       throw new TypeError(
         `value V has more entries than expected\nExpected:${this.#length} but got ${value.length}`,

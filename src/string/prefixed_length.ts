@@ -27,7 +27,7 @@ export class PrefixedString extends UnsizedType<string> {
     super.incrementOffset(options, value.length);
   }
 
-  write(
+  override write(
     value: string,
     dt: DataView,
     options: Options = { byteOffset: 0 },
@@ -57,7 +57,7 @@ export class PrefixedString extends UnsizedType<string> {
     return TEXT_DECODER.decode(view);
   }
 
-  read(dt: DataView, options: Options = { byteOffset: 0 }): string {
+  override read(dt: DataView, options: Options = { byteOffset: 0 }): string {
     const length = this.#prefixCodec.read(dt, options);
     super.alignOffset(options);
 

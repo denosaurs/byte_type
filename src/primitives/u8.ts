@@ -6,7 +6,6 @@ export class U8 extends SizedType<number> {
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): number {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
     const value = dt.getUint8(options.byteOffset);
     super.incrementOffset(options);
     return value;
@@ -17,7 +16,6 @@ export class U8 extends SizedType<number> {
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
     dt.setUint8(options.byteOffset, value);
     super.incrementOffset(options);
   }

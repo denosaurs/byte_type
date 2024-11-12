@@ -27,7 +27,7 @@ export class Struct<
     return result as V;
   }
 
-  read(dt: DataView, options: Options = { byteOffset: 0 }): V {
+  override read(dt: DataView, options: Options = { byteOffset: 0 }): V {
     if (this.#record.length === 0) return {} as V;
 
     const result: Record<string, unknown> = {};
@@ -53,7 +53,11 @@ export class Struct<
     }
   }
 
-  write(value: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
+  override write(
+    value: V,
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
     if (this.#record.length === 0) return;
 
     for (let i = 0; i < this.#record.length; i++) {

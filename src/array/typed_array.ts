@@ -39,8 +39,6 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
-
     const value = new this.arrayConstructor(
       dt.buffer,
       dt.byteOffset + options.byteOffset,
@@ -56,8 +54,6 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    super.rangeCheck(dt.byteLength, options.byteOffset);
-
     const view = new this.arrayConstructor(
       dt.buffer,
       dt.byteOffset + options.byteOffset,
