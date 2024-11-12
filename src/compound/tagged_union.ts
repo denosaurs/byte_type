@@ -52,7 +52,7 @@ export class TaggedUnion<
     return codec.readPacked(dt, options) as V;
   }
 
-  read(dt: DataView, options: Options = { byteOffset: 0 }): V {
+  override read(dt: DataView, options: Options = { byteOffset: 0 }): V {
     const discriminant = this.#discriminant.read(dt, options);
     super.alignOffset(options);
     const codec = this.#record[discriminant];
@@ -73,7 +73,7 @@ export class TaggedUnion<
     codec.writePacked(variant, dt, options);
   }
 
-  write(
+  override write(
     variant: V,
     dt: DataView,
     options: Options = { byteOffset: 0 },

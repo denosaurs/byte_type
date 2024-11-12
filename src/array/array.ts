@@ -18,7 +18,7 @@ export class ArrayType<T> extends UnsizedType<T[]> {
     return result;
   }
 
-  read(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
+  override read(dt: DataView, options: Options = { byteOffset: 0 }): T[] {
     if (this.length === 0) return [];
     const result = new Array(this.length);
     const { type } = this;
@@ -47,7 +47,7 @@ export class ArrayType<T> extends UnsizedType<T[]> {
     }
   }
 
-  write(
+  override write(
     value: T[],
     dt: DataView,
     options: Options = { byteOffset: 0 },

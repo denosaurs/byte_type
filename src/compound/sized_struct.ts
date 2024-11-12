@@ -66,7 +66,7 @@ export class SizedStruct<
     return this.#readPacked(dt, options);
   }
 
-  read(dt: DataView, options: Options = { byteOffset: 0 }): V {
+  override read(dt: DataView, options: Options = { byteOffset: 0 }): V {
     return this.#read(dt, options);
   }
 
@@ -78,7 +78,11 @@ export class SizedStruct<
     this.#writePacked(dt, options, value);
   }
 
-  write(value: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
+  override write(
+    value: V,
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
     this.#write(dt, options, value);
   }
 }

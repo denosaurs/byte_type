@@ -38,7 +38,7 @@ export class Union<
     return codec.readPacked(dt, options) as V;
   }
 
-  read(dt: DataView, options: Options = { byteOffset: 0 }): V {
+  override read(dt: DataView, options: Options = { byteOffset: 0 }): V {
     const discriminant = this.#discriminant.read(dt, {
       byteOffset: options.byteOffset,
     });
@@ -58,7 +58,11 @@ export class Union<
     codec.writePacked(variant, dt, options);
   }
 
-  write(variant: V, dt: DataView, options: Options = { byteOffset: 0 }): void {
+  override write(
+    variant: V,
+    dt: DataView,
+    options: Options = { byteOffset: 0 },
+  ): void {
     const discriminant = this.#variantFinder(variant);
     const codec = this.#record[discriminant];
     if (!codec) throw new TypeError("Unknown discriminant");

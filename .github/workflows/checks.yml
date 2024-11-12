@@ -28,4 +28,4 @@ jobs:
         uses: denoland/setup-deno@main
 
       - name: Run deno test
-        run: deno test --allow-none
+        run: deno test
