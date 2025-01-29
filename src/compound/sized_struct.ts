@@ -18,8 +18,7 @@ function createReadMethod<V>(
   const method = isPacked ? "readPacked" : "read";
   const keys = Object.keys(input);
 
-  const generatedCodec = keys.map((k) => createRead(k, method));
-
+  const generatedCodec = keys.map((k) => createRead(k, method)).join(",\n");
   const body = `const { ${keys} } = this;\nreturn { ${generatedCodec} }`;
 
   return Function("dt", "options", body).bind(input);
@@ -32,9 +31,9 @@ function createWriteMethod<V>(
   const method = isPacked ? "writePacked" : "write";
   const keys = Object.keys(input);
 
-  const generatedCodec = keys.map((k) => createWrite(k, method));
+  const generatedCodec = keys.map((k) => createWrite(k, method)).join("\n");
+  const body = `const { ${keys} } = this;\n${generatedCodec}`;
 
-  const body = `const { ${keys} } = this;\nreturn { ${generatedCodec} }`;
   return Function("value", "dt", "options", body).bind(input);
 }
 
@@ -55,7 +54,7 @@ export class SizedStruct<
         read: createReadMethod(input, false),
         readPacked: createReadMethod(input, true),
         write: createWriteMethod(input, false),
-        writePacked: createWriteMethod(input, false),
+        writePacked: createWriteMethod(input, true),
       };
     } else {
       this.#inner = new Struct(input);
