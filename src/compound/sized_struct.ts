@@ -1,5 +1,5 @@
 import { type InnerType, type Options, SizedType } from "../mod.ts";
-import { calculateTotalSize, getBiggestAlignment } from "../util.ts";
+import { alignmentOf, sizeOf } from "../util.ts";
 
 type ReadFn<R> = (dt: DataView, options: Options) => R;
 type WriteFn<V> = (dt: DataView, options: Options, value: V) => void;
@@ -55,7 +55,7 @@ export class SizedStruct<
   #write: WriteFn<V>;
 
   constructor(input: T) {
-    super(calculateTotalSize(input), getBiggestAlignment(input));
+    super(sizeOf(input), alignmentOf(input));
     this.#readPacked = createFunc(input, "readPacked");
     this.#read = createFunc(input, "read");
     this.#writePacked = createFunc(input, "writePacked");
