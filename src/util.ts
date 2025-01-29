@@ -13,16 +13,17 @@ export const isLittleEndian: boolean = (() => {
 export const align = (unaligned: number, alignment: number): number =>
   (unaligned + alignment - 1) & ~(alignment - 1);
 
-type ArrayOrRecord<T> = T[] | Record<string | number, T>;
+type ArrayOrRecord<T> = Array<T> | Record<string | number, T>;
 
-/** Find and returns the biggest alignment out of a record / array of types */
-export const getBiggestAlignment = (
+/** Find and returns the biggest alignment of a record/array of types */
+export const alignmentOf = (
   input: ArrayOrRecord<UnsizedType<unknown>>,
 ): number =>
   Object.values(input)
     .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
 
-export const calculateTotalSize = (
+/** Find and return the unaligned size of a record/array of types */
+export const sizeOf = (
   input: ArrayOrRecord<SizedType<unknown>>,
 ): number =>
   Object.values(input)
