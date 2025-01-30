@@ -1,8 +1,9 @@
-import { type InnerType, type Options, SizedType } from "../mod.ts";
 import { calculateTotalSize, getBiggestAlignment } from "../util.ts";
+import { type InnerType, type Options, SizedType } from "../types/mod.ts";
+import { Struct } from "./mod.ts";
 
 type ReadFn<R> = (dt: DataView, options: Options) => R;
-type WriteFn<V> = (dt: DataView, options: Options, value: V) => void;
+type WriteFn<V> = (value: V, dt: DataView, options: Options) => void;
 
 const createRead = (key: string, method: string) =>
   `"${key}": ${key}.${method}(dt, options)`;
@@ -10,37 +11,30 @@ const createRead = (key: string, method: string) =>
 const createWrite = (key: string, method: string) =>
   `${key}.${method}(value.${key}, dt, options);`;
 
-function createFunc<V, M extends `read${string}`>(
+function createReadMethod<V>(
   input: Record<string, SizedType<unknown>>,
-  method: M,
-): ReadFn<V>;
-function createFunc<V, M extends `write${string}`>(
-  input: Record<string, SizedType<unknown>>,
-  method: M,
-): WriteFn<V>;
-function createFunc<V>(
-  input: Record<string, SizedType<unknown>>,
-  method: string,
-): WriteFn<V> | ReadFn<V> {
-  const isWriter = method.startsWith("write");
-  const seperator = !isWriter ? "," : "";
+  isPacked: boolean,
+): ReadFn<V> {
+  const method = isPacked ? "readPacked" : "read";
   const keys = Object.keys(input);
 
-  const mapFn = isWriter ? createWrite : createRead;
+  const generatedCodec = keys.map((k) => createRead(k, method)).join(",\n");
+  const body = `const { ${keys} } = this;\nreturn { ${generatedCodec} }`;
 
-  const generatedCodec = keys.map((k) => mapFn(k, method)).join(seperator);
-  const args = ["dt", "options"];
-  let body = `const { ${keys} } = this;`;
+  return Function("dt", "options", body).bind(input);
+}
 
-  if (!isWriter) {
-    body += `return {${generatedCodec}}`;
-  } else {
-    body += `${generatedCodec}`;
-    args.push("value");
-  }
+function createWriteMethod<V>(
+  input: Record<string, SizedType<unknown>>,
+  isPacked: boolean,
+): WriteFn<V> {
+  const method = isPacked ? "writePacked" : "write";
+  const keys = Object.keys(input);
 
-  args.push(body);
-  return Function(...args).bind(input) as WriteFn<V> | ReadFn<V>;
+  const generatedCodec = keys.map((k) => createWrite(k, method)).join("\n");
+  const body = `const { ${keys} } = this;\n${generatedCodec}`;
+
+  return Function("value", "dt", "options", body).bind(input);
 }
 
 export class SizedStruct<
@@ -48,26 +42,31 @@ export class SizedStruct<
   V extends { [K in keyof T]: InnerType<T[K]> } = {
     [K in keyof T]: InnerType<T[K]>;
   },
-> extends SizedType<V> {
-  #readPacked: ReadFn<V>;
-  #read: ReadFn<V>;
-  #writePacked: WriteFn<V>;
-  #write: WriteFn<V>;
+> // Omit here to make typescript shut up about 2720. Maybe a bug.
+  extends SizedType<V>
+  implements Omit<Struct<T, V>, "#record"> {
+  #inner: Partial<Struct<T, V>>;
 
-  constructor(input: T) {
+  constructor(input: T, jitEnabled: boolean = true) {
     super(calculateTotalSize(input), getBiggestAlignment(input));
-    this.#readPacked = createFunc(input, "readPacked");
-    this.#read = createFunc(input, "read");
-    this.#writePacked = createFunc(input, "writePacked");
-    this.#write = createFunc(input, "write");
+    if (jitEnabled) {
+      this.#inner = {
+        read: createReadMethod(input, false),
+        readPacked: createReadMethod(input, true),
+        write: createWriteMethod(input, false),
+        writePacked: createWriteMethod(input, true),
+      };
+    } else {
+      this.#inner = new Struct(input);
+    }
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    return this.#readPacked(dt, options);
+    return this.#inner.readPacked!(dt, options);
   }
 
   override read(dt: DataView, options: Options = { byteOffset: 0 }): V {
-    return this.#read(dt, options);
+    return this.#inner.read!(dt, options);
   }
 
   writePacked(
@@ -75,7 +74,7 @@ export class SizedStruct<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    this.#writePacked(dt, options, value);
+    this.#inner.writePacked!(value, dt, options);
   }
 
   override write(
@@ -83,6 +82,6 @@ export class SizedStruct<
     dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
-    this.#write(dt, options, value);
+    this.#inner.write!(value, dt, options);
   }
 }
