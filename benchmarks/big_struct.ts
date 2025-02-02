@@ -18,18 +18,20 @@ const baseDescriptor = {
   fieldIndex: u8,
 };
 
-const descriptor = {
+const codec = new Struct({
   ...baseDescriptor,
   card: new Struct(innerDescriptor),
-};
+});
 
-const sizedDescriptor = {
+const sizedJITCodec = new SizedStruct({
   ...baseDescriptor,
   card: new SizedStruct(innerDescriptor),
-};
+});
 
-const codec = new Struct(descriptor);
-const sizedCodec = new SizedStruct(sizedDescriptor);
+const sizedCodec = new SizedStruct({
+  ...baseDescriptor,
+  card: new SizedStruct(innerDescriptor, false),
+}, false);
 
 const data: InnerType<typeof codec> = {
   handIndex: 255,
@@ -55,6 +57,14 @@ Deno.bench({
   group: "read",
   fn: () => {
     codec.readPacked(DATA_VIEW);
+  },
+});
+
+Deno.bench({
+  name: "SizedStruct JIT (Read)",
+  group: "read",
+  fn: () => {
+    sizedJITCodec.readPacked(DATA_VIEW);
   },
 });
 
@@ -89,6 +99,14 @@ Deno.bench({
   group: "write",
   fn: () => {
     codec.writePacked(data, DATA_VIEW);
+  },
+});
+
+Deno.bench({
+  name: "SizedStruct JIT (Write)",
+  group: "write",
+  fn: () => {
+    sizedJITCodec.writePacked(data, DATA_VIEW);
   },
 });
 
