@@ -21,6 +21,11 @@ export const alignmentOf = (
 ): number =>
   Object.values(input)
     .reduce((acc, x) => Math.max(acc, x.byteAlignment), 0);
+/**
+ * Find and returns the biggest alignment of a record/array of types
+ * @deprecated
+ */
+export const getBiggestAlignment = alignmentOf;
 
 /** Find and return the unaligned size of a record/array of types */
 export const sizeOf = (
@@ -28,3 +33,9 @@ export const sizeOf = (
 ): number =>
   Object.values(input)
     .reduce((acc, x) => acc + x.byteSize, 0);
+
+/**
+ * Find and return the unaligned size of a record/array of types
+ * @deprecated
+ */
+export const calculateTotalSize = sizeOf;
