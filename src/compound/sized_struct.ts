@@ -1,5 +1,5 @@
-import { calculateTotalSize, getBiggestAlignment } from "../util.ts";
-import { type InnerType, type Options, SizedType } from "../types/mod.ts";
+import { type InnerType, type Options, SizedType } from "../mod.ts";
+import { alignmentOf, sizeOf } from "../util.ts";
 import { Struct } from "./mod.ts";
 
 type ReadFn<R> = (dt: DataView, options: Options) => R;
@@ -48,7 +48,7 @@ export class SizedStruct<
   #inner: Partial<Struct<T, V>>;
 
   constructor(input: T, jitEnabled: boolean = true) {
-    super(calculateTotalSize(input), getBiggestAlignment(input));
+    super(sizeOf(input), alignmentOf(input));
     if (jitEnabled) {
       this.#inner = {
         read: createReadMethod(input, false),

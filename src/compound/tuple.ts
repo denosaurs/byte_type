@@ -1,5 +1,5 @@
 import { type InnerType, type Options, UnsizedType } from "../types/mod.ts";
-import { getBiggestAlignment } from "../util.ts";
+import { alignmentOf } from "../util.ts";
 
 export class Tuple<
   T extends [...UnsizedType<unknown>[]],
@@ -8,7 +8,7 @@ export class Tuple<
   #tupleTypes: T;
   #length: number;
   constructor(types: T) {
-    super(getBiggestAlignment(types));
+    super(alignmentOf(types));
     this.#tupleTypes = types;
     this.#length = types.length;
   }

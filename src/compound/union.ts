@@ -5,7 +5,7 @@ import {
   UnsizedType,
   type ValueOf,
 } from "../types/mod.ts";
-import { getBiggestAlignment } from "../util.ts";
+import { alignmentOf } from "../util.ts";
 
 type FindDiscriminant<V, D extends number> = (variant: V) => D;
 
@@ -24,7 +24,7 @@ export class Union<
     input: T,
     variantFinder: FindDiscriminant<V, Keys<T>>,
   ) {
-    super(getBiggestAlignment(input));
+    super(alignmentOf(input));
     this.#record = input;
     this.#variantFinder = variantFinder;
   }

@@ -1,5 +1,5 @@
 import { type InnerType, type Options, UnsizedType } from "../types/mod.ts";
-import { getBiggestAlignment } from "../util.ts";
+import { alignmentOf } from "../util.ts";
 
 export class Struct<
   T extends Record<string, UnsizedType<unknown>>,
@@ -10,7 +10,7 @@ export class Struct<
   #record: Array<[string, UnsizedType<unknown>]>;
 
   constructor(input: T) {
-    super(getBiggestAlignment(input));
+    super(alignmentOf(input));
     this.#record = Object.entries(input);
   }
 
