@@ -8,18 +8,32 @@ export class Offset extends SizedType<null> {
   }
 
   override readPacked(
-    _dt: DataView,
+    dt: DataView,
     options: Options = { byteOffset: 0 },
   ): null {
+    if (
+      this.byteSize + options.byteOffset < 0 ||
+      this.byteSize + options.byteOffset >= dt.byteLength
+    ) {
+      throw new RangeError("Read goes out of bound.");
+    }
+
     super.incrementOffset(options);
     return null;
   }
 
   override writePacked(
     _value: null,
-    _dt: DataView,
+    dt: DataView,
     options: Options = { byteOffset: 0 },
   ): void {
+    if (
+      this.byteSize + options.byteOffset < 0 ||
+      this.byteSize + options.byteOffset >= dt.byteLength
+    ) {
+      throw new RangeError("Write goes out of bound.");
+    }
+
     super.incrementOffset(options);
   }
 }
