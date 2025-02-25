@@ -2,5 +2,11 @@
   "name": "@denosaurs/byte-type",
   "version": "0.4.1",
   "exports": "./mod.ts",
-  "lock": false
+  "lock": false,
+  "lint": {
+    "rules": {
+      "tags": ["jsr"],
+      "include": ["verbatim-module-syntax", "no-inferrable-types"]
+    }
+  }
 }
