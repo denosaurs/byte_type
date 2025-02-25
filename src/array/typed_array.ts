@@ -41,6 +41,7 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T {
     const value = new this.arrayConstructor(
       dt.buffer,
+      // @ts-expect-error:
       dt.byteOffset + options.byteOffset,
       this.length,
     ).slice() as T;
@@ -56,6 +57,7 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
   ): void {
     const view = new this.arrayConstructor(
       dt.buffer,
+      // @ts-expect-error:
       dt.byteOffset + options.byteOffset,
       this.length,
     );
