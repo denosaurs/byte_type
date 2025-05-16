@@ -1,30 +1,30 @@
 import { type Options, SizedType } from "../types/mod.ts";
 
 type TypedArrays =
-  | Uint8Array
-  | Uint8ClampedArray
-  | Int8Array
-  | Uint16Array
-  | Int16Array
-  | Uint32Array
-  | Int32Array
-  | Float32Array
-  | Float64Array
-  | BigUint64Array
-  | BigInt64Array;
+  | Uint8Array<ArrayBufferLike>
+  | Uint8ClampedArray<ArrayBufferLike>
+  | Int8Array<ArrayBufferLike>
+  | Uint16Array<ArrayBufferLike>
+  | Int16Array<ArrayBufferLike>
+  | Uint32Array<ArrayBufferLike>
+  | Int32Array<ArrayBufferLike>
+  | Float32Array<ArrayBufferLike>
+  | Float64Array<ArrayBufferLike>
+  | BigUint64Array<ArrayBufferLike>
+  | BigInt64Array<ArrayBufferLike>;
 
-type TypedConstructors<T extends TypedArrays> = T extends Uint8Array
-  ? Uint8ArrayConstructor
-  : T extends Uint8ClampedArray ? Uint8ClampedArrayConstructor
-  : T extends Int8Array ? Int8ArrayConstructor
-  : T extends Uint16Array ? Uint16ArrayConstructor
-  : T extends Int16Array ? Int16ArrayConstructor
-  : T extends Uint32Array ? Uint32ArrayConstructor
-  : T extends Int32Array ? Int32ArrayConstructor
-  : T extends Float32Array ? Float32ArrayConstructor
-  : T extends Float64Array ? Float64ArrayConstructor
-  : T extends BigUint64Array ? BigUint64ArrayConstructor
-  : T extends BigInt64Array ? BigInt64ArrayConstructor
+type TypedConstructors<T extends TypedArrays> = T extends
+  Uint8Array<ArrayBufferLike> ? Uint8ArrayConstructor
+  : T extends Uint8ClampedArray<ArrayBufferLike> ? Uint8ClampedArrayConstructor
+  : T extends Int8Array<ArrayBufferLike> ? Int8ArrayConstructor
+  : T extends Uint16Array<ArrayBufferLike> ? Uint16ArrayConstructor
+  : T extends Int16Array<ArrayBufferLike> ? Int16ArrayConstructor
+  : T extends Uint32Array<ArrayBufferLike> ? Uint32ArrayConstructor
+  : T extends Int32Array<ArrayBufferLike> ? Int32ArrayConstructor
+  : T extends Float32Array<ArrayBufferLike> ? Float32ArrayConstructor
+  : T extends Float64Array<ArrayBufferLike> ? Float64ArrayConstructor
+  : T extends BigUint64Array<ArrayBufferLike> ? BigUint64ArrayConstructor
+  : T extends BigInt64Array<ArrayBufferLike> ? BigInt64ArrayConstructor
   : never;
 
 export class TypedArray<T extends TypedArrays> extends SizedType<T> {
@@ -40,8 +40,8 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T {
     const value = new this.arrayConstructor(
-      dt.buffer,
       // @ts-expect-error:
+      dt.buffer,
       dt.byteOffset + options.byteOffset,
       this.length,
     ).slice() as T;
@@ -56,8 +56,8 @@ export class TypedArray<T extends TypedArrays> extends SizedType<T> {
     options: Options = { byteOffset: 0 },
   ): void {
     const view = new this.arrayConstructor(
-      dt.buffer,
       // @ts-expect-error:
+      dt.buffer,
       dt.byteOffset + options.byteOffset,
       this.length,
     );
