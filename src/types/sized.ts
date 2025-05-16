@@ -13,7 +13,7 @@ interface Sized<T> extends Unsized<T> {
  * In future released this may be used for certain optimizations
  */
 export abstract class SizedType<T> extends UnsizedType<T> implements Sized<T> {
-  override maxSize: number | null;
+  override readonly maxSize: number | null;
 
   constructor(readonly byteSize: number, byteAlignment: number = 1) {
     super(byteAlignment);
