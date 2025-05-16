@@ -1,8 +1,11 @@
 import { type Options, UnsizedType } from "../types/mod.ts";
 
 export class ArrayType<T> extends UnsizedType<T[]> {
+  override readonly maxSize: number | null;
+
   constructor(readonly type: UnsizedType<T>, readonly length: number) {
     super(type.byteAlignment);
+    this.maxSize = type.maxSize ? type.maxSize * length : null;
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): T[] {

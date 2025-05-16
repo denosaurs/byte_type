@@ -12,6 +12,10 @@ Deno.test({
     const view = new Uint8Array(ab);
     const type = asciiChar;
 
+    await t.step("estimated size", () => {
+      assertEquals(type.maxSize, 1);
+    });
+
     await t.step("Read", () => {
       encoder.encodeInto("H", view);
       const result = type.read(dt);

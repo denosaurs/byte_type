@@ -3,6 +3,7 @@ import type { Options } from "./common.ts";
 
 export interface Unsized<T> {
   readonly byteAlignment: number;
+  readonly maxSize: number | null;
 
   readPacked(dt: DataView, options?: Options): T;
   writePacked(value: T, dt: DataView, options?: Options): void;
@@ -14,6 +15,8 @@ export interface Unsized<T> {
  * This is the most common used class for when you do not know the size of your struct.
  */
 export abstract class UnsizedType<T> implements Unsized<T> {
+  readonly maxSize: null | number = null;
+
   constructor(readonly byteAlignment: number) {}
 
   /**

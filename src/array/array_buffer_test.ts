@@ -9,6 +9,11 @@ Deno.test({
     dt.setUint16(0, 0xFF);
 
     const type = new ArrayBufferType(2);
+
+    await t.step("estimated size", () => {
+      assertEquals(type.maxSize, 2);
+    });
+
     await t.step("Read", () => {
       const newAb = type.read(dt);
       assertEquals(new Uint8Array(newAb), new Uint8Array(ab));

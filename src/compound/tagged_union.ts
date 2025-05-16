@@ -5,7 +5,7 @@ import {
   UnsizedType,
   type ValueOf,
 } from "../types/mod.ts";
-import { alignmentOf } from "../util.ts";
+import { align, alignmentOf } from "../util.ts";
 
 type FindDiscriminant<V, D extends number | string> = (variant: V) => D;
 
@@ -21,6 +21,8 @@ export class TaggedUnion<
   #record: T;
   #variantFinder: FindDiscriminant<V, Keys<T>>;
   #discriminant: UnsizedType<string | number>;
+
+  override maxSize: number | null;
 
   constructor(
     input: T,
@@ -43,6 +45,13 @@ export class TaggedUnion<
     this.#record = input;
     this.#variantFinder = variantFinder;
     this.#discriminant = discriminant;
+    this.maxSize = Object.values(input).some((x) => x.maxSize === null)
+      ? null
+      : Object.values(input).reduce(
+        (acc: number, x) =>
+          Math.max(acc, align(x.maxSize as number, this.byteAlignment)),
+        0,
+      );
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {

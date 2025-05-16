@@ -11,6 +11,10 @@ Deno.test({
       two: 2,
     });
 
+    await t.step("estimated size", () => {
+      assertEquals(type.maxSize, 4);
+    });
+
     await t.step("Read", () => {
       dt.setUint8(3, 0b01);
       const result = type.read(dt);

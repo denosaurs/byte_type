@@ -8,6 +8,9 @@ Deno.test({
     const dt = new DataView(ab);
     const type = i16le;
 
+    await t.step("estimate size", () => {
+      assertEquals(type.maxSize, 2);
+    });
     await t.step("Read", () => {
       dt.setInt16(0, 12, true);
       const result = type.read(dt);

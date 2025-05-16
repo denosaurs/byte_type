@@ -6,6 +6,9 @@ Deno.test("u128", async (t) => {
   const dt = new DataView(buff);
   const value = 12n;
 
+  await t.step("estimate size", () => {
+    assertEquals(u128be.maxSize, 16);
+  });
   await t.step("read", () => {
     // Little endian
     const lo = value & 0xffffffffffffffffn;
@@ -44,6 +47,9 @@ Deno.test("i128", async (t) => {
   const dt = new DataView(buff);
   const value = 12n;
 
+  await t.step("estimate size", () => {
+    assertEquals(i128be.maxSize, 16);
+  });
   await t.step("read", () => {
     // Little endian
     const lo = value & 0xffffffffffffffffn;

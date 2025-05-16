@@ -9,6 +9,10 @@ Deno.test({
     const dt = new DataView(ab);
     const type = new Tuple([u8, u32le]);
 
+    await t.step("estimated size", () => {
+      assertEquals(type.maxSize, 8);
+    });
+
     await t.step("Read", () => {
       dt.setUint32(0, 127, true);
       dt.setUint32(4, 255, true);

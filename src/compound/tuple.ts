@@ -1,5 +1,5 @@
 import { type InnerType, type Options, UnsizedType } from "../types/mod.ts";
-import { alignmentOf } from "../util.ts";
+import { align, alignmentOf } from "../util.ts";
 
 export class Tuple<
   T extends [...UnsizedType<unknown>[]],
@@ -7,10 +7,19 @@ export class Tuple<
 > extends UnsizedType<V> {
   #tupleTypes: T;
   #length: number;
+  override maxSize: number | null;
+
   constructor(types: T) {
     super(alignmentOf(types));
     this.#tupleTypes = types;
     this.#length = types.length;
+
+    this.maxSize = types.every((a) => a.maxSize !== null)
+      ? types.reduce(
+        (acc, x) => acc + align(Number(x.maxSize), this.byteAlignment),
+        0,
+      )
+      : null;
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {
