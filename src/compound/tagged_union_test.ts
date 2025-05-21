@@ -1,5 +1,5 @@
 import { TaggedUnion } from "./tagged_union.ts";
-import { u32le, u8 } from "../mod.ts";
+import { cstring, u32le, u8 } from "../mod.ts";
 import { assertEquals, assertThrows } from "../../test_deps.ts";
 
 Deno.test({
@@ -12,6 +12,21 @@ Deno.test({
       1: u8,
       2: u8,
     }, (a) => a === 32 ? 0 : 1);
+
+    await t.step("estimate size", () => {
+      const type = new TaggedUnion({
+        0: u32le,
+        1: u8,
+        2: u8,
+      }, (a) => a === 32 ? 0 : 1);
+      assertEquals(type.maxSize, 4);
+
+      const unknownSizedType = new TaggedUnion({
+        0: cstring,
+      }, () => 0);
+
+      assertEquals(unknownSizedType.maxSize, null);
+    });
 
     await t.step("Read", () => {
       dt.setUint8(0, 1);

@@ -8,6 +8,10 @@ Deno.test({
     const dt = new DataView(ab);
     const type = cstring;
 
+    await t.step("estimate size", () => {
+      assertEquals(type.maxSize, null);
+    });
+
     await t.step("Read", () => {
       new TextEncoder().encodeInto("Hello", new Uint8Array(ab));
       const result = type.read(dt);

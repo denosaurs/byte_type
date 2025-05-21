@@ -9,6 +9,10 @@ Deno.test({
     const dt = new DataView(ab);
     const type = new Uint16ArrayType(1);
 
+    await t.step("estimated size", () => {
+      assertEquals(type.maxSize, 2);
+    });
+
     await t.step("Read", () => {
       dt.setUint16(0, 0xFFFF);
       const result = type.read(dt);

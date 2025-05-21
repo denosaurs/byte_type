@@ -2,6 +2,8 @@ import { type Options, UnsizedType } from "../types/mod.ts";
 import { CONTINUE_BIT, SEGMENT_BITS } from "./_common.ts";
 
 export class I32Leb128 extends UnsizedType<number> {
+  override maxSize = 5;
+
   constructor() {
     super(1);
   }

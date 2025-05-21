@@ -1,5 +1,5 @@
 import { type InnerType, type Options, UnsizedType } from "../types/mod.ts";
-import { alignmentOf } from "../util.ts";
+import { align, alignmentOf } from "../util.ts";
 
 export class Struct<
   T extends Record<string, UnsizedType<unknown>>,
@@ -8,10 +8,17 @@ export class Struct<
   },
 > extends UnsizedType<V> {
   #record: Array<[string, UnsizedType<unknown>]>;
+  override readonly maxSize: number | null;
 
   constructor(input: T) {
     super(alignmentOf(input));
     this.#record = Object.entries(input);
+    this.maxSize = this.#record.every(([_, a]) => a.maxSize !== null)
+      ? this.#record.reduce(
+        (acc, [_, x]) => acc + align(Number(x.maxSize), this.byteAlignment),
+        0,
+      )
+      : null;
   }
 
   readPacked(dt: DataView, options: Options = { byteOffset: 0 }): V {

@@ -2,6 +2,10 @@ import { assertEquals, assertThrows } from "../../test_deps.ts";
 import { i32leb128 } from "./mod.ts";
 
 Deno.test("i32leb128", async ({ step }) => {
+  await step("estimated size", () => {
+    assertEquals(i32leb128.maxSize, 5);
+  });
+
   await step("read", async ({ step }) => {
     await step("positive", () => {
       let data = Uint8Array.of(127);

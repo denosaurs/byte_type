@@ -8,6 +8,9 @@ Deno.test({
     const dt = new DataView(ab);
     const type = f64le;
 
+    await t.step("estimate size", () => {
+      assertEquals(type.maxSize, 8);
+    });
     await t.step("Read", () => {
       dt.setFloat64(0, 12, true);
       const result = type.read(dt);

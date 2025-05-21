@@ -2,6 +2,10 @@ import { assertEquals, assertThrows } from "../../test_deps.ts";
 import { i64leb128 } from "./i64_leb128.ts";
 
 Deno.test("i64leb128", async ({ step }) => {
+  await step("estimated size", () => {
+    assertEquals(i64leb128.maxSize, 10);
+  });
+
   await step("read", async ({ step }) => {
     await step("positive", () => {
       assertEquals(

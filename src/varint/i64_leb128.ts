@@ -10,6 +10,8 @@ const I64_VIEW = new BigInt64Array(AB);
 const U64_VIEW = new BigUint64Array(AB);
 
 export class I64Leb128 extends UnsizedType<bigint> {
+  override maxSize = 10;
+
   constructor() {
     super(1);
   }

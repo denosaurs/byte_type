@@ -2,9 +2,12 @@ import type { Options } from "./mod.ts";
 import { SizedType } from "./types/mod.ts";
 
 export class Offset extends SizedType<null> {
+  override readonly maxSize: number | null;
+
   constructor(byteSize: number) {
     // Magic trick for flooring
     super(byteSize | 0, 1);
+    this.maxSize = 0;
   }
 
   override readPacked(
