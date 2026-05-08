@@ -5,7 +5,7 @@
   "lock": false,
   "lint": {
     "rules": {
-      "tags": ["jsr"],
+      "tags": ["recommended", "jsr"],
       "include": ["verbatim-module-syntax", "no-inferrable-types"]
     }
   }
