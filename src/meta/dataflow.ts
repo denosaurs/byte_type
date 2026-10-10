@@ -1,5 +1,4 @@
-import type { Options } from "./mod.ts";
-import { SizedType } from "./types/mod.ts";
+import { type Options, SizedType } from "../types/mod.ts";
 
 export class Offset extends SizedType<null> {
   override readonly maxSize: number | null;
