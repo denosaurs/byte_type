@@ -19,4 +19,5 @@ export * as VarInts from "./varint/mod.ts";
 export * from "./compound/mod.ts";
 export * as Compounds from "./compound/mod.ts";
 
-export * from "./meta_types.ts";
+export * from "./meta/mod.ts";
+export * as Meta from "./meta/mod.ts";

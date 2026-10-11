@@ -1,5 +1,5 @@
-import { assertEquals, assertThrows } from "../test_deps.ts";
-import { Offset, Reverse, Skip, Struct, u32 } from "./mod.ts";
+import { assertEquals, assertThrows } from "../../test_deps.ts";
+import { Offset, Reverse, Skip, Struct, u32 } from "../mod.ts";
 
 Deno.test({
   name: "Offset (meta)",
